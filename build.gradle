@@ -1,0 +1,62 @@
+plugins {
+    id 'java'
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+}
+
+group = 'dev.puzzleshq'
+version = '1.0.0-alpha'
+
+repositories {
+    maven {
+        name = 'Fabric'
+        url = 'https://maven.fabricmc.net/'
+    }
+    maven {
+        url = "https://jitpack.io"
+    }
+    gradlePluginPortal()
+    mavenCentral()
+}
+
+dependencies {
+    gradleApi()
+
+    implementation "org.ow2.asm:asm:9.8"
+    implementation "org.ow2.asm:asm-tree:9.8"
+    implementation "org.ow2.asm:asm-util:9.8"
+    implementation "org.ow2.asm:asm-analysis:9.8"
+    implementation "org.ow2.asm:asm-commons:9.8"
+
+    implementation "dev.puzzleshq:access-writer:1.0.4+c"
+    implementation "dev.puzzleshq:mod-format-framework:1.0.0"
+    implementation "org.hjson:hjson:3.1.0"
+
+    implementation "com.gradleup.shadow:shadow-gradle-plugin:8.3.8"
+}
+
+gradlePlugin {
+    plugins {
+//        zomboid {
+//            id = 'jigsaw-zomboid'
+//            implementationClass = 'dev.puzzleshq.buildsrc.zomboid.ZomboidPlugin'
+//        }
+        sync {
+            id = 'jigsaw-sync'
+            implementationClass = 'dev.puzzleshq.jigsaw.sync.JigsawSync'
+        }
+        access {
+            id = 'jigsaw-access'
+            implementationClass = 'dev.puzzleshq.jigsaw.access.JigsawAccess'
+        }
+        interface_inject {
+            id = 'jigsaw-inject'
+            implementationClass = 'dev.puzzleshq.jigsaw.inject.JigsawInject'
+        }
+        transform {
+            id = 'jigsaw-transform'
+            implementationClass = 'dev.puzzleshq.jigsaw.transform.JigsawTransform'
+        }
+    }
+}
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
