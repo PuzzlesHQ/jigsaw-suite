@@ -25,10 +25,7 @@ import org.objectweb.asm.ClassVisitor;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.function.Function;
 
 public class JigsawTransform extends AbstractJigsawPlugin {
@@ -138,7 +135,8 @@ public class JigsawTransform extends AbstractJigsawPlugin {
                     transformedFile.createNewFile();
 
 //                    JarTransformer.process(artifact.getRegularFile(), null);
-                    project.getDependencies().add(artifact.getConfiguration(), artifact.getNotation2());
+                    ((ExternalModuleDependency) Objects.requireNonNull(project.getDependencies().add(artifact.getConfiguration(), artifact.getNotation2())))
+                            .setChanging(true);
                     JarTransformer.transform(artifact.getRegularFile(), transformedFile, JigsawTransform.PLUGIN_TRANSFORMER_MAP.values());
 
                 } catch (IOException e) {
