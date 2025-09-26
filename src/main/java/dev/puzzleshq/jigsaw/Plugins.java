@@ -3,8 +3,10 @@ package dev.puzzleshq.jigsaw;
 import dev.puzzleshq.jigsaw.access.JigsawAccess;
 import dev.puzzleshq.jigsaw.transform.JigsawTransform;
 import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
+import org.gradle.api.Project;
 import org.gradle.api.plugins.PluginContainer;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -21,9 +23,13 @@ public class Plugins {
 
     private static final AtomicBoolean hasBeenSetup = new AtomicBoolean();
 
-    public static void setup(PluginContainer pluginContainer) {
+    public static File jigsawDir;
+
+    public static void setup(Project project, PluginContainer pluginContainer) {
         if (hasBeenSetup.get()) return;
         hasBeenSetup.set(true);
+
+        jigsawDir = project.file(".gradle/.jigsaw");
 
         jigsawAccessInstalled = pluginContainer.hasPlugin(JigsawAccess.class);
         if (jigsawAccessInstalled) jigsawAccess = pluginContainer.getPlugin(JigsawAccess.class);
