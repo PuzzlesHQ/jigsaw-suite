@@ -21,8 +21,6 @@ public class AccessExtension extends AbstractJigsawExtension {
 
     public void addManipulators(ConfigurableFileCollection collection) {
         if (collection == null) return;
-        for (File file : collection)
-            project.evaluationDependsOn(file.getAbsolutePath());
         this.manipulators.set(this.manipulators.get().plus(collection));
     }
 
@@ -30,8 +28,6 @@ public class AccessExtension extends AbstractJigsawExtension {
         if (collections == null) return;
         for (ConfigurableFileCollection collection : collections) {
             if (collection == null) continue;
-            for (File file : collection)
-                project.evaluationDependsOn(file.getAbsolutePath());
             this.manipulators.set(this.manipulators.get().plus(collection));
         }
     }

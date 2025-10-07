@@ -6,15 +6,20 @@ import org.objectweb.asm.ClassWriter;
 
 import java.io.*;
 import java.util.Collection;
-import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class JarTransformer {
 
-    public static void process(File in, Collection<Consumer<ClassReader>> transformerCollection) {
+    public static void process(
+            File in,
+            Collection<BiConsumer<String, ClassReader>> classProcessorCollection,
+            Collection<BiConsumer<String, byte[]>> resourceProcessorCollection
+    ) {
         try {
             FileInputStream stream = new FileInputStream(in);
             byte[] bytes = JavaUtils.readAllBytes(stream);
@@ -25,12 +30,17 @@ public class JarTransformer {
 
             ZipEntry entry;
             while ((entry = zipInputStream.getNextEntry()) != null) {
+                byte[] entryBytes = JavaUtils.readAllBytes(zipInputStream);
                 if (entry.getName().endsWith(".class")) {
-                    byte[] entryBytes = JavaUtils.readAllBytes(zipInputStream);
                     ClassReader classReader = new ClassReader(entryBytes);
+                    String className = classReader.getClassName();
 
-                    for (Consumer<ClassReader> value : transformerCollection) {
-                        value.accept(classReader);
+                    for (BiConsumer<String, ClassReader> value : classProcessorCollection) {
+                        value.accept(className, classReader);
+                    }
+                } else {
+                    for (BiConsumer<String, byte[]> value : resourceProcessorCollection) {
+                        value.accept(entry.getName(), entryBytes);
                     }
                 }
             }
@@ -42,8 +52,7 @@ public class JarTransformer {
         }
     }
 
-    public static void transform(File in, File out, Collection<Function<ClassVisitor, ClassVisitor>> transformerCollection) {
-        System.out.println(transformerCollection.size());
+    public static void transform(File in, File out, Collection<BiFunction<AtomicReference<String>, ClassVisitor, ClassVisitor>> transformerCollection) {
         try {
             FileInputStream stream = new FileInputStream(in);
             byte[] bytes = JavaUtils.readAllBytes(stream);
@@ -60,13 +69,15 @@ public class JarTransformer {
                 byte[] entryBytes = JavaUtils.readAllBytes(zipInputStream);
                 if (entry.getName().endsWith(".class")) {
                     ClassReader classReader = new ClassReader(entryBytes);
+                    String className = classReader.getClassName();
+
                     ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
                     ClassVisitor last = writer;
 
-                    for (Function<ClassVisitor, ClassVisitor> value : transformerCollection) {
-                        last = value.apply(last);
+                    AtomicReference<String> atomicReference = new AtomicReference<>(className);
+                    for (BiFunction<AtomicReference<String>, ClassVisitor, ClassVisitor> value : transformerCollection) {
+                        last = value.apply(atomicReference, last);
                     }
-
                     classReader.accept(last, 0);
 
                     byte[] newBytes = writer.toByteArray();
@@ -80,6 +91,7 @@ public class JarTransformer {
 
             byteArrayInputStream.close();
             zipInputStream.close();
+            zipOutputStream.finish();
             zipOutputStream.close();
             fileOutputStream.close();
         } catch (IOException e) {

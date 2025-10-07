@@ -25,7 +25,7 @@ public class JigsawSync extends AbstractJigsawPlugin {
             });
 
             for (AbstractJigsawPlugin abstractJigsawPlugin : PLUGIN_LIST) {
-                System.out.println("Loaded \"" + abstractJigsawPlugin + "\" with Priority: " + abstractJigsawPlugin.getPriority());
+                System.out.println("Loaded \u001B[0;35m\"" + abstractJigsawPlugin + "\"\u001B[0;0m with Priority: \u001B[0;33m" + abstractJigsawPlugin.getPriority() + "\u001B[0;0m");
                 abstractJigsawPlugin.afterEvaluate(p);
             }
         });

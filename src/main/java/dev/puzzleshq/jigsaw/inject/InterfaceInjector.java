@@ -6,7 +6,6 @@ import org.hjson.JsonValue;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class InterfaceInjector extends ClassVisitor {

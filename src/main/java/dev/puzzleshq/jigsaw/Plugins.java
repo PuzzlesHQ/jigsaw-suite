@@ -38,4 +38,18 @@ public class Plugins {
         if (jigsawTransformInstalled) jigsawTransform = pluginContainer.getPlugin(JigsawTransform.class);
     }
 
+    //jigsawRemap {
+    //    registerMappingConfiguration(
+    //            "remap1_12_2SRG", // configurationToRemapJars
+    //            "mappings.srg:mcp_config:1.12.2-20201025.185735", // mapping
+    //            "finalforeach:cosmic-reach:0.5.0-alpha:client" // baseJar
+
+    //remap1_12_2SRG("net.minecraft:client:1.12.2")
+    //    mappings "mappings.srg:mcp_config:1.12.2-20201025.185735"
+    //mappings "mappings.legacyfabric:yarn:1.8.2+build.551"
+    //    mappings "mappings.legacyfabric:yarn:1.8.8+build.551"
+    //    )
+    //}
+
+
 }

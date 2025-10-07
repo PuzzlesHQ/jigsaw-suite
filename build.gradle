@@ -53,6 +53,22 @@ gradlePlugin {
             id = 'jigsaw-inject'
             implementationClass = 'dev.puzzleshq.jigsaw.inject.JigsawInject'
         }
+        game {
+            id = 'jigsaw-game'
+            implementationClass = 'dev.puzzleshq.jigsaw.game.JigsawGame'
+        }
+        zomboid {
+            id = 'jigsaw-zomboid'
+            implementationClass = 'dev.puzzleshq.jigsaw.zomboid.ZomboidPlugin'
+        }
+        cosmic {
+            id = 'jigsaw-cosmic'
+            implementationClass = 'dev.puzzleshq.jigsaw.cosmic.CosmicPlugin'
+        }
+        remap {
+            id = 'jigsaw-remap'
+            implementationClass = 'dev.puzzleshq.jigsaw.remap.JigsawRemap'
+        }
         transform {
             id = 'jigsaw-transform'
             implementationClass = 'dev.puzzleshq.jigsaw.transform.JigsawTransform'

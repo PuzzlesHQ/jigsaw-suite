@@ -5,37 +5,42 @@ import java.io.File;
 public class JigsawFileArtifact {
 
     private final File regularFile;
-    private final String localPath;
     private final String configuration;
     private final String notation;
     private final String notation2;
+    private final String localPath;
 
-    private final String groupId;
-    private final String artifactId;
-    private final String version;
-
-    public JigsawFileArtifact(File regularFile, String localPath, String configuration, String groupId, String artifactId, String version) {
+    public JigsawFileArtifact(File regularFile, String configuration, String notation) {
         this.regularFile = regularFile;
-        this.localPath = localPath;
         this.configuration = configuration;
-        this.notation = groupId + ":" + artifactId + ":" + version;
-        this.notation2 = "transform-cache." + groupId + ":" + artifactId + ":" + version;
+        if (notation.contains(" (")) {
+            notation = notation.replaceAll("[A-Za-z~`0-9!@#$%^&*.\\- ]*\\(", "");
+            notation = notation.replaceAll("\\)", "");
+        }
+        if (!notation.contains(":")) {
+            notation = notation.replace(".jar", "");
+            notation = "local-file:" + notation + ":0.0.0@jar";
+        }
+        this.notation = notation;
+        this.notation2 = "transform-cache." + notation;
+        if (!notation.contains("@")) notation += "@jar";
 
-        this.groupId = groupId;
-        this.artifactId = artifactId;
-        this.version = version;
-    }
+        String[] notationSplit = notation.split("@");
 
-    public String getArtifactId() {
-        return artifactId;
-    }
+        String path;
+        String[] strings = notationSplit[0].split(":");
+        path = strings[0].replace('.', '/');
+        path += "/" + strings[1];
+        path += "/" + strings[2];
+        path += "/" + strings[1] + "-" + strings[2];
 
-    public String getGroupId() {
-        return groupId;
-    }
 
-    public String getVersion() {
-        return version;
+        if (strings.length == 4) {
+            path += "-" + strings[0];
+        }
+        path += "." + notationSplit[1];
+
+        this.localPath = path;
     }
 
     public String getNotation() {
