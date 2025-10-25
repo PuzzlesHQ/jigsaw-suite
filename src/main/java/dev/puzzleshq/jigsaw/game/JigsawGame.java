@@ -18,8 +18,7 @@ public class JigsawGame extends AbstractJigsawPlugin {
     public void apply(Project target) {
         super.apply(target);
 
-        GameExtension extension = target.getExtensions().create("jigsawGame", GameExtension.class, target, target.getObjects());
-        extension.splitSourceSets();
+        target.getExtensions().create("jigsawGame", GameExtension.class, target, target.getObjects());
     }
 
     @Override

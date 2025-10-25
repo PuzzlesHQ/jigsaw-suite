@@ -11,19 +11,7 @@ public class GameExtension extends AbstractJigsawExtension {
         super(project, objectFactory);
     }
 
-    public void destroy() {
-        SourceSetContainer sourceSetContainer = project.getExtensions().getByType(SourceSetContainer.class);
-        if (JigsawGame.CLIENT_SOURCE_SET != null)
-            sourceSetContainer.remove(JigsawGame.CLIENT_SOURCE_SET);
-        if (JigsawGame.COMMON_SOURCE_SET != null)
-            sourceSetContainer.remove(JigsawGame.COMMON_SOURCE_SET);
-        if (JigsawGame.SERVER_SOURCE_SET != null)
-            sourceSetContainer.remove(JigsawGame.SERVER_SOURCE_SET);
-    }
-
     public void splitSourceSets() {
-        destroy();
-
         SourceSetContainer sourceSetContainer = project.getExtensions().getByType(SourceSetContainer.class);
         JigsawGame.CLIENT_SOURCE_SET = sourceSetContainer.create("client");
         JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.create("common");
@@ -31,8 +19,6 @@ public class GameExtension extends AbstractJigsawExtension {
     }
 
     public void clientSourceSetOnly() {
-        destroy();
-
         SourceSetContainer sourceSetContainer = project.getExtensions().getByType(SourceSetContainer.class);
         JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.create("client");
         JigsawGame.SERVER_SOURCE_SET = JigsawGame.COMMON_SOURCE_SET;
@@ -40,8 +26,6 @@ public class GameExtension extends AbstractJigsawExtension {
     }
 
     public void serverSourceSetOnly() {
-        destroy();
-
         SourceSetContainer sourceSetContainer = project.getExtensions().getByType(SourceSetContainer.class);
         JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.create("server");
         JigsawGame.SERVER_SOURCE_SET = JigsawGame.COMMON_SOURCE_SET;
@@ -49,8 +33,6 @@ public class GameExtension extends AbstractJigsawExtension {
     }
 
     public void mergedSourceSets() {
-        destroy();
-
         SourceSetContainer sourceSetContainer = project.getExtensions().getByType(SourceSetContainer.class);
         JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.create("main");
         JigsawGame.SERVER_SOURCE_SET = JigsawGame.COMMON_SOURCE_SET;
