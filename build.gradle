@@ -7,6 +7,14 @@ plugins {
 group = 'dev.puzzleshq'
 version = '1.0.0-alpha'
 
+def ref = System.getenv("GITHUB_REF")
+version = ((ref == null) ? "refs/tags/0.0.0-alpha" : ref).replaceAll("refs/tags/", "")
+
+String mavenUrl = System.getenv("MAVEN_URL")
+
+String envRepo = System.getenv("MAVEN_REPO")
+String mavenRepo = envRepo != null ? envRepo : "releases"
+
 repositories {
     maven {
         name = 'Fabric'
@@ -86,3 +94,64 @@ gradlePlugin {
     }
 }
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(8))
+
+publishing {
+    repositories {
+        maven {
+            name = "PuzzleHQsMaven"
+            url = mavenUrl + "/" + mavenRepo
+            credentials {
+                username = System.getenv("MAVEN_NAME")
+                password = System.getenv("MAVEN_SECRET")
+            }
+            authentication {
+                basic(BasicAuthentication)
+            }
+        }
+        mavenLocal()
+    }
+
+    publications {
+        maven(MavenPublication) {
+            groupId = p_group
+            artifactId = p_id
+
+            from components.java
+
+            pom {
+                name = p_name
+                description = p_desc
+                url = p_git
+
+                licenses {
+                    license {
+                        name = "GNU Lesser General Public License"
+                        url = "https://www.gnu.org/licenses/lgpl-3.0.html"
+                        distribution = "LGPL"
+                        comments = "This project includes LGPL-licensed components."
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'mrzombii'
+                        name = 'Mr Zombii'
+                        email = 'thezombiigames@gmail.com'
+                    }
+                }
+                scm {
+                    connection = "${p_git}.git"
+                    developerConnection = "${p_git}.git"
+                    url = "${p_git}.git"
+                }
+            }
+        }
+    }
+}
+
+if (ref != null) {
+    signing {
+        useGpgCmd()
+        sign(publishing.publications[0])
+    }
+}
