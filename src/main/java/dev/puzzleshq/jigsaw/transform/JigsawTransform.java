@@ -49,12 +49,16 @@ public class JigsawTransform extends AbstractJigsawPlugin {
                 configurationMap.put("implementation", impl);
                 Configuration compile = configurations.register("compileOnlyTransform").get();
                 configurationMap.put("compileOnly", compile);
+                Configuration runtime = configurations.register("runtimeOnlyTransform").get();
+                configurationMap.put("runtimeOnly", runtime);
                 return;
             }
             Configuration impl = configurations.register(sourceSet.getName() + "Transform").get();
             configurationMap.put(sourceSet.getName() + "Implementation", impl);
             Configuration compile = configurations.register(sourceSet.getName() + "CompileOnlyTransform").get();
             configurationMap.put(sourceSet.getName() + "CompileOnly", compile);
+            Configuration runtime = configurations.register(sourceSet.getName() + "RuntimeOnlyTransform").get();
+            configurationMap.put(sourceSet.getName() + "RuntimeOnly", runtime);
         });
 
         target.getRepositories().maven((r) -> {
@@ -124,6 +128,6 @@ public class JigsawTransform extends AbstractJigsawPlugin {
 
     @Override
     public int getPriority() {
-        return 0;
+        return Integer.MIN_VALUE + 1;
     }
 }

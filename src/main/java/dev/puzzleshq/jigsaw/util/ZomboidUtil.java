@@ -1,5 +1,6 @@
 package dev.puzzleshq.jigsaw.util;
 
+import dev.puzzleshq.jigsaw.transform.JigsawTransform;
 import org.apache.groovy.json.internal.LazyMap;
 import org.gradle.api.Project;
 import org.gradle.api.file.ConfigurableFileCollection;
@@ -10,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -25,9 +27,11 @@ public class ZomboidUtil {
             Path path = zomboidPath.toAbsolutePath().resolve((String) file);
             ConfigurableFileCollection absPath = project.files(path.toAbsolutePath());
 
-            project.getDependencies().add("clientImplementation", absPath);
-            project.getDependencies().add("commonImplementation", absPath);
-            project.getDependencies().add("serverImplementation", absPath);
+            JigsawTransform.configurationMap.forEach((s, configuration) -> {
+                if (s.toLowerCase().contains("implementation")) {
+                    project.getDependencies().add(s, absPath);
+                }
+            });
         }
     }
 
@@ -35,9 +39,11 @@ public class ZomboidUtil {
         if (jar.exists()) {
             ConfigurableFileCollection absPath = project.files(jar.getAbsolutePath());
 
-            project.getDependencies().add("clientCompileOnlyTransform", absPath);
-            project.getDependencies().add("commonCompileOnlyTransform", absPath);
-            project.getDependencies().add("serverCompileOnlyTransform", absPath);
+            JigsawTransform.configurationMap.forEach((s, configuration) -> {
+                if (s.toLowerCase().contains("compileonly")) {
+                    project.getDependencies().add(configuration.getName(), absPath);
+                }
+            });
         }
     }
 

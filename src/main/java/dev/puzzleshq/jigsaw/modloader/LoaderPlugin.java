@@ -3,6 +3,7 @@ package dev.puzzleshq.jigsaw.modloader;
 import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.game.JigsawGame;
 import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
+import dev.puzzleshq.jigsaw.util.ConfigurationUtil;
 import dev.puzzleshq.jigsaw.util.JavaUtils;
 import org.apache.groovy.json.internal.IO;
 import org.gradle.api.Project;
@@ -42,100 +43,73 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
         target.getConfigurations().register("puzzleLoader").get();
     }
 
-    Configuration getClientConfiguration(Project project) {
-        Object value = project.findProperty("game_has_client");
-        if (value != null && value.equals("false")) return null;
-
-        if (JigsawGame.CLIENT_SOURCE_SET.getName().equals("client")) {
-            return project.getConfigurations().getByName("clientImplementation");
-        }
-        if (JigsawGame.CLIENT_SOURCE_SET.getName().equals("main")) {
-            return project.getConfigurations().getByName("implementation");
-        }
-        return null;
-    }
-
-    Configuration getServerConfiguration(Project project) {
-        Object value = project.findProperty("game_has_server");
-        if (value != null && value.equals("false")) return null;
-
-        if (JigsawGame.SERVER_SOURCE_SET.getName().equals("server")) {
-            return project.getConfigurations().getByName("serverImplementation");
-        }
-        if (JigsawGame.SERVER_SOURCE_SET.getName().equals("main")) {
-            return project.getConfigurations().getByName("implementation");
-        }
-        return null;
-    }
-
-    Configuration getCommonConfiguration(Project project) {
-        if (JigsawGame.COMMON_SOURCE_SET.getName().equals("common")) {
-            return project.getConfigurations().getByName("commonImplementation");
-        }
-        if (JigsawGame.COMMON_SOURCE_SET.getName().equals("main")) {
-            return project.getConfigurations().getByName("implementation");
-        }
-        return null;
-    }
-
     @Override
     public void afterEvaluate(Project project) {
         super.afterEvaluate(project);
 
-        /*
-            puzzleLoader("dev.puzzleshq:puzzle-loader-core:$version")
-            puzzleLoader("dev.puzzleshq:puzzle-loader-cosmic:$version")
-         */
+        // I have to do this so it doesn't crash when it can't find it
+        project.getConfigurations().all(a -> {
+            if (a.getName().equals("puzzleLoader")) {
+                /*
+                    puzzleLoader("dev.puzzleshq:puzzle-loader-core:$version")
+                    puzzleLoader("dev.puzzleshq:puzzle-loader-cosmic:$version")
 
-        Configuration clientImpl = project.getConfigurations().register("puzzleLoaderClient").get();
-        Configuration clientConfig = getClientConfiguration(project);
-        if (clientConfig != null) clientConfig.extendsFrom(clientImpl);
 
-        Configuration commonImpl = project.getConfigurations().register("puzzleLoaderCommon").get();
-        Configuration commonConfig = getCommonConfiguration(project);
-        if (commonConfig != null) commonConfig.extendsFrom(commonImpl);
+                    cosmicReach("dev.puzzleshq:puzzle-loader-cosmic:$version")
+                 */
 
-        Configuration serverImpl = project.getConfigurations().register("puzzleLoaderServer").get();
-        Configuration serverConfig = getServerConfiguration(project);
-        if (serverConfig != null) serverConfig.extendsFrom(serverImpl);
+                Configuration clientImpl = project.getConfigurations().register("puzzleLoaderClient").get();
+                Configuration clientConfig = ConfigurationUtil.getClientConfiguration(project);
+                if (clientConfig != null) clientConfig.extendsFrom(clientImpl);
 
-        DependencyHandler dependencyHandler = project.getDependencies();
-        for (Dependency puzzleLoader : project.getConfigurations().getByName("puzzleLoader").getDependencies()) {
-            dependencyHandler.add("puzzleLoaderClient", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":client");
+                Configuration commonImpl = project.getConfigurations().register("puzzleLoaderCommon").get();
+                Configuration commonConfig = ConfigurationUtil.getCommonConfiguration(project);
+                if (commonConfig != null) commonConfig.extendsFrom(commonImpl);
 
-            dependencyHandler.add("puzzleLoaderClient", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":common");
-            dependencyHandler.add("puzzleLoaderCommon", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":common");
-            dependencyHandler.add("puzzleLoaderServer", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":common");
+                Configuration serverImpl = project.getConfigurations().register("puzzleLoaderServer").get();
+                Configuration serverConfig = ConfigurationUtil.getServerConfiguration(project);
+                if (serverConfig != null) serverConfig.extendsFrom(serverImpl);
 
-            dependencyHandler.add("puzzleLoaderServer", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":server");
+                DependencyHandler dependencyHandler = project.getDependencies();
+                for (Dependency puzzleLoader : project.getConfigurations().getByName("puzzleLoader").getDependencies()) {
+                    dependencyHandler.add("puzzleLoaderClient", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":client");
 
-            File manifestFile = new File(MANIFEST_LOCATIONS, puzzleLoader.getName() + "-version-manifest-refreshable.json");
-            byte[] manifestBytes = getOrDownload(manifestFile, "https://raw.githubusercontent.com/PuzzlesHQ/" + puzzleLoader.getName() + "/refs/heads/versioning/versions.json");
+                    dependencyHandler.add("puzzleLoaderClient", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":common");
+                    dependencyHandler.add("puzzleLoaderCommon", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":common");
+                    dependencyHandler.add("puzzleLoaderServer", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":common");
 
-            if (!manifestFile.exists()) throw new RuntimeException("Could not find manifest for \"" + puzzleLoader.getName() + "\", This should have been downloaded, there could have been an error or it was deleted.");
-            JsonObject manifestObject = parseBytesToJson(manifestFile, manifestBytes);
-            JsonObject versions = manifestObject.get("versions").asObject();
+                    dependencyHandler.add("puzzleLoaderServer", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":server");
 
-            {
-                JsonValue versionObject = versions.get(puzzleLoader.getVersion());
-                if (versionObject == null)
-                    throw new RuntimeException(puzzleLoader.getName() + " version \"" + puzzleLoader.getVersion() + "\" does not exist in version manifest!");
+                    File manifestFile = new File(MANIFEST_LOCATIONS, puzzleLoader.getName() + "-version-manifest-refreshable.json");
+                    byte[] manifestBytes = getOrDownload(manifestFile, "https://raw.githubusercontent.com/PuzzlesHQ/" + puzzleLoader.getName() + "/refs/heads/versioning/versions.json");
 
-                JsonObject versionObjectJson = versionObject.asObject();
+                    if (!manifestFile.exists())
+                        throw new RuntimeException("Could not find manifest for \"" + puzzleLoader.getName() + "\", This should have been downloaded, there could have been an error or it was deleted.");
+                    JsonObject manifestObject = parseBytesToJson(manifestFile, manifestBytes);
+                    JsonObject versions = manifestObject.get("versions").asObject();
 
-                File depFile = new File(MANIFEST_LOCATIONS, puzzleLoader.getName() + "-" + puzzleLoader.getVersion() + "-dependencies-refreshable.json");
-                byte[] dependenciesBytes = getOrDownload(depFile, versionObjectJson.get("dependencies").asString());
-                JsonObject dependenciesObject = parseBytesToJson(depFile, dependenciesBytes);
+                    {
+                        JsonValue versionObject = versions.get(puzzleLoader.getVersion());
+                        if (versionObject == null)
+                            throw new RuntimeException(puzzleLoader.getName() + " version \"" + puzzleLoader.getVersion() + "\" does not exist in version manifest!");
 
-                processDependenciesObject(
-                        project,
-                        clientConfig,
-                        commonConfig,
-                        serverConfig,
-                        dependenciesObject
-                );
+                        JsonObject versionObjectJson = versionObject.asObject();
+
+                        File depFile = new File(MANIFEST_LOCATIONS, puzzleLoader.getName() + "-" + puzzleLoader.getVersion() + "-dependencies-refreshable.json");
+                        byte[] dependenciesBytes = getOrDownload(depFile, versionObjectJson.get("dependencies").asString());
+                        JsonObject dependenciesObject = parseBytesToJson(depFile, dependenciesBytes);
+
+                        processDependenciesObject(
+                                project,
+                                clientConfig,
+                                commonConfig,
+                                serverConfig,
+                                dependenciesObject
+                        );
+                    }
+                }
             }
-        }
+        });
     }
 
     private void processDependenciesObject(Project project, Configuration clientConfig, Configuration commonConfig, Configuration serverConfig, JsonObject dependenciesObject) {
@@ -244,7 +218,7 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
 
     @Override
     public int getPriority() {
-        return 6;
+        return Integer.MAX_VALUE;
     }
 }
 

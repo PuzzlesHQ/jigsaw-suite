@@ -1,6 +1,7 @@
 package dev.puzzleshq.jigsaw.zomboid;
 
 import dev.puzzleshq.jigsaw.game.GameExtension;
+import dev.puzzleshq.jigsaw.transform.JigsawTransform;
 import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.util.SteamAppLocator;
 import dev.puzzleshq.jigsaw.util.ZomboidUtil;
@@ -61,9 +62,12 @@ public class ZomboidPlugin extends AbstractJigsawPlugin {
         ConfigurableFileCollection configurableFileCollection = project.files(zomboidPath);
 
         DependencyHandler dependencyHandler = project.getDependencies();
-        dependencyHandler.add("clientRuntimeOnly", configurableFileCollection);
-        dependencyHandler.add("serverRuntimeOnly", configurableFileCollection);
-        dependencyHandler.add("commonRuntimeOnly", configurableFileCollection);
+
+        JigsawTransform.configurationMap.forEach((s, configuration) -> {
+            if (s.toLowerCase().contains("runtimeonly")) {
+                dependencyHandler.add(s, configurableFileCollection);
+            }
+        });
     }
 
     @Override

@@ -1,9 +1,9 @@
 package dev.puzzleshq.jigsaw.game;
 
-import dev.puzzleshq.jigsaw.game.tasks.RunClientTask;
-import dev.puzzleshq.jigsaw.game.tasks.RunServerTask;
-import dev.puzzleshq.jigsaw.game.tasks.RunVanillaClientTask;
-import dev.puzzleshq.jigsaw.game.tasks.RunVanillaServerTask;
+import dev.puzzleshq.jigsaw.game.tasks.run.RunClientTask;
+import dev.puzzleshq.jigsaw.game.tasks.run.RunServerTask;
+import dev.puzzleshq.jigsaw.game.tasks.run.RunVanillaClientTask;
+import dev.puzzleshq.jigsaw.game.tasks.run.RunVanillaServerTask;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskContainer;
 
@@ -23,6 +23,7 @@ public class GameTasks {
             container.register("runModdedServer", RunServerTask.class);
             container.register("runVanillaServer", RunVanillaServerTask.class);
         }
+
     }
 
 }
