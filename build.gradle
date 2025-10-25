@@ -37,10 +37,16 @@ dependencies {
 
 gradlePlugin {
     plugins {
-//        zomboid {
-//            id = 'jigsaw-zomboid'
-//            implementationClass = 'dev.puzzleshq.buildsrc.zomboid.ZomboidPlugin'
-//        }
+        cosmic_reach_plugin {
+            id = 'jigsaw-cosmic-reach'
+            implementationClass = 'dev.puzzleshq.jigsaw.premade.CosmicReachPlugin'
+        }
+
+        project_zomboid_plugin {
+            id = 'jigsaw-project-zomboid'
+            implementationClass = 'dev.puzzleshq.jigsaw.premade.ProjectZomboidPlugin'
+        }
+
         sync {
             id = 'jigsaw-sync'
             implementationClass = 'dev.puzzleshq.jigsaw.sync.JigsawSync'
@@ -56,6 +62,10 @@ gradlePlugin {
         game {
             id = 'jigsaw-game'
             implementationClass = 'dev.puzzleshq.jigsaw.game.JigsawGame'
+        }
+        loader {
+            id = 'jigsaw-loader'
+            implementationClass = 'dev.puzzleshq.jigsaw.modloader.LoaderPlugin'
         }
         zomboid {
             id = 'jigsaw-zomboid'

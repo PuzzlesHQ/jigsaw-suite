@@ -1,7 +1,6 @@
 package dev.puzzleshq.jigsaw.game;
 
 import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
-import dev.puzzleshq.jigsaw.zomboid.ZomboidExtension;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
@@ -19,23 +18,15 @@ public class JigsawGame extends AbstractJigsawPlugin {
     public void apply(Project target) {
         super.apply(target);
 
-        ConfigurationContainer configurations = target.getConfigurations();
-//        gameConfiguration = configurations.register("fatJarGame").get();
-
-//        target.getExtensions().create("jigsawGame", ZomboidExtension.class, target, target.getObjects());
+        GameExtension extension = target.getExtensions().create("jigsawGame", GameExtension.class, target, target.getObjects());
+        extension.splitSourceSets();
     }
 
     @Override
     public void afterEvaluate(Project project) {
         super.afterEvaluate(project);
 
-//        gameConfiguration.getDependencies().all(d -> {
-//            if (gameConfiguration.getDependencies().size() > 1)
-//                throw new RuntimeException("Cannot have more than one 'fatJarGame' configuration per module.");
-//
-//            File file = gameConfiguration.getArtifacts().getFiles().getSingleFile();
-//
-//        });
+        GameTasks.registerTasks(project);
     }
 
     @Override

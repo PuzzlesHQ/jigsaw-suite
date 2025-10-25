@@ -11,7 +11,6 @@ public class ZomboidTasks {
         TaskContainer container = project.getTasks();
         container.register("generateZomboidJar", GenerateZomboidJarTask.class);
         container.register("deleteZomboidJar", DeleteZomboidJarTask.class);
-
     }
 
 }

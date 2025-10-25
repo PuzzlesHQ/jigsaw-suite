@@ -1,5 +1,6 @@
 package dev.puzzleshq.jigsaw.zomboid;
 
+import dev.puzzleshq.jigsaw.game.GameExtension;
 import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.util.SteamAppLocator;
 import dev.puzzleshq.jigsaw.util.ZomboidUtil;
@@ -8,9 +9,11 @@ import org.apache.groovy.json.internal.LazyMap;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.tasks.JavaExec;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 
 public class ZomboidPlugin extends AbstractJigsawPlugin {
 
@@ -23,8 +26,20 @@ public class ZomboidPlugin extends AbstractJigsawPlugin {
     public void apply(Project target) {
         super.apply(target);
 
-        target.getExtensions().create("jigsawZomboid", ZomboidExtension.class, target, target.getObjects());
         ZomboidTasks.registerTasks(target);
+
+        target.getTasks().all(a -> {
+            if (
+                    a.getName().equals("runModdedClient") ||
+                    a.getName().equals("runModdedServer") ||
+                    a.getName().equals("runVanillaClient") ||
+                    a.getName().equals("runVanillaServer")
+            ) {
+                JavaExec exec = (JavaExec) a;
+                exec.jvmArgs((List<String>) ZomboidPlugin.json.get("vmArgs"));
+                exec.setWorkingDir(zomboidPath);
+            }
+        });
     }
 
     @Override

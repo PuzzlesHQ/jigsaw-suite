@@ -1,13 +1,12 @@
 package dev.puzzleshq.jigsaw.transform;
 
 import dev.puzzleshq.jigsaw.Plugins;
-import dev.puzzleshq.jigsaw.transform.tasks.TransformTask;
 import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
-import dev.puzzleshq.jigsaw.util.JarTransformer;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.*;
 import org.gradle.api.artifacts.result.ResolvedArtifactResult;
 import org.gradle.api.tasks.SourceSetContainer;
+import org.gradle.internal.hash.Hashing;
 import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -59,6 +58,11 @@ public class JigsawTransform extends AbstractJigsawPlugin {
         });
 
         target.getRepositories().maven((r) -> {
+            r.setName("Puzzle Maven");
+            r.setUrl("https://maven.puzzleshq.dev/releases/");
+        });
+
+        target.getRepositories().maven((r) -> {
             r.setName("Maven 2");
             r.setUrl("https://repo.maven.apache.org/maven2/");
         });
@@ -93,15 +97,20 @@ public class JigsawTransform extends AbstractJigsawPlugin {
 
             for (ResolvedArtifactResult artifact : configuration.getIncoming().getArtifacts()) {
                 System.out.println("\u001B[1;95m\t\t ↳ \u001B[1;0m Found artifact \u001B[0;36m'" + artifact + "'\u001B[0;0m");
+                String hash = Hashing.sha256().hashBytes(artifact.getFile().getName().getBytes()).toString();
+                hash = hash.substring(0, 4) + hash.substring(hash.length() - 4);
+
                 toBeTransformed.add(new JigsawFileArtifact(
                         artifact.getFile(),
                         stringConfigurationEntry.getKey(),
-                        artifact.getId().getDisplayName()
+                        artifact.getId().getDisplayName(),
+                        hash
                 ));
             }
 
             while (!toBeTransformed.isEmpty()) {
                 JigsawFileArtifact artifact = toBeTransformed.remove();
+
                 ((ExternalModuleDependency) Objects.requireNonNull(project.getDependencies()
                         .add(artifact.getConfiguration(), artifact.getNotation2()))).setChanging(true);
             }

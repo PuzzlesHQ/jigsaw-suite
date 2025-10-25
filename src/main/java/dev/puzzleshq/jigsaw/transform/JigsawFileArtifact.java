@@ -10,7 +10,7 @@ public class JigsawFileArtifact {
     private final String notation2;
     private final String localPath;
 
-    public JigsawFileArtifact(File regularFile, String configuration, String notation) {
+    public JigsawFileArtifact(File regularFile, String configuration, String notation, String hash) {
         this.regularFile = regularFile;
         this.configuration = configuration;
         if (notation.contains(" (")) {
@@ -20,6 +20,8 @@ public class JigsawFileArtifact {
         if (!notation.contains(":")) {
             notation = notation.replace(".jar", "");
             notation = "local-file:" + notation + ":0.0.0@jar";
+        } else {
+            notation += "#" + hash;
         }
         this.notation = notation;
         this.notation2 = "transform-cache." + notation;

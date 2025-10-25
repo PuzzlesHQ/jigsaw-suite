@@ -2,6 +2,7 @@ package dev.puzzleshq.jigsaw.transform.tasks;
 
 import dev.puzzleshq.jigsaw.transform.JigsawFileArtifact;
 import dev.puzzleshq.jigsaw.transform.JigsawTransform;
+import dev.puzzleshq.jigsaw.util.DepUtils;
 import dev.puzzleshq.jigsaw.util.FileUtil;
 import dev.puzzleshq.jigsaw.util.JarTransformer;
 import org.gradle.api.DefaultTask;
@@ -10,6 +11,7 @@ import org.gradle.api.artifacts.DependencySet;
 import org.gradle.api.artifacts.ExternalModuleDependency;
 import org.gradle.api.artifacts.result.ResolvedArtifactResult;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.internal.hash.Hashing;
 
 import java.io.File;
 import java.util.ArrayDeque;
@@ -36,10 +38,14 @@ public class TransformTask extends DefaultTask {
             Queue<JigsawFileArtifact> toBeTransformed = new ArrayDeque<>();
 
             for (ResolvedArtifactResult artifact : configuration.getIncoming().getArtifacts()) {
+                String hash = Hashing.sha256().hashBytes(artifact.getFile().getName().getBytes()).toString();
+                hash = hash.substring(0, 4) + hash.substring(hash.length() - 4);
+
                 toBeTransformed.add(new JigsawFileArtifact(
                         artifact.getFile(),
                         stringConfigurationEntry.getKey(),
-                        artifact.getId().getDisplayName()
+                        artifact.getId().getDisplayName(),
+                        hash
                 ));
             }
 
