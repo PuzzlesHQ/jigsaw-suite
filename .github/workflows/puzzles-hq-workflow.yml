@@ -8,5 +8,3 @@ jobs:
   publish-release:
     uses: PuzzlesHQ/Puzzles-Workflows/.github/workflows/maven-puzzle-publishing.yml@main
     secrets: inherit
-    with:
-      TAG_NAME: ${{ github.event.release.tag_name }}
