@@ -1,14 +1,14 @@
 package dev.puzzleshq.jigsaw.game;
 
-import dev.puzzleshq.jigsaw.game.tasks.build.BuildClientJarTask;
-import dev.puzzleshq.jigsaw.game.tasks.build.BuildCommonJarTask;
-import dev.puzzleshq.jigsaw.game.tasks.build.BuildServerJarTask;
-import dev.puzzleshq.jigsaw.game.tasks.build.bundle.BuildMergedClientJarTask;
-import dev.puzzleshq.jigsaw.game.tasks.build.bundle.BuildMergedJarTask;
-import dev.puzzleshq.jigsaw.game.tasks.build.bundle.BuildMergedServerJarTask;
-import dev.puzzleshq.jigsaw.game.tasks.build.bundle.BuildSingleJarTask;
-import dev.puzzleshq.jigsaw.game.tasks.build.sources.BuildSimpleSourcesJarTask;
-import dev.puzzleshq.jigsaw.game.tasks.build.sources.BuildSourcesJarTask;
+import dev.puzzleshq.jigsaw.game.tasks.building.BuildClientJarTask;
+import dev.puzzleshq.jigsaw.game.tasks.building.BuildCommonJarTask;
+import dev.puzzleshq.jigsaw.game.tasks.building.BuildServerJarTask;
+import dev.puzzleshq.jigsaw.game.tasks.building.bundle.BuildMergedClientJarTask;
+import dev.puzzleshq.jigsaw.game.tasks.building.bundle.BuildMergedJarTask;
+import dev.puzzleshq.jigsaw.game.tasks.building.bundle.BuildMergedServerJarTask;
+import dev.puzzleshq.jigsaw.game.tasks.building.bundle.BuildSingleJarTask;
+import dev.puzzleshq.jigsaw.game.tasks.building.sources.BuildSimpleSourcesJarTask;
+import dev.puzzleshq.jigsaw.game.tasks.building.sources.BuildSourcesJarTask;
 import dev.puzzleshq.jigsaw.util.AbstractJigsawExtension;
 import org.gradle.api.Project;
 import org.gradle.api.model.ObjectFactory;
