@@ -10,6 +10,7 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository;
 import org.gradle.api.tasks.TaskAction;
 import org.hjson.JsonArray;
 import org.hjson.JsonObject;
+import org.hjson.JsonValue;
 import org.hjson.Stringify;
 
 import java.io.File;
@@ -32,21 +33,25 @@ public class DependenciesJson extends DefaultTask {
 
         JsonObject object = new JsonObject();
 
-        Configuration clientTransform = ConfigurationUtil.getClientTransformConfiguration(getProject());
-        Configuration commonTransform = ConfigurationUtil.getCommonTransformConfiguration(getProject());
-        Configuration serverTransform = ConfigurationUtil.getServerTransformConfiguration(getProject());
+//        Configuration clientTransform = ConfigurationUtil.getClientTransformConfiguration(getProject());
+//        Configuration commonTransform = ConfigurationUtil.getCommonTransformConfiguration(getProject());
+//        Configuration serverTransform = ConfigurationUtil.getServerTransformConfiguration(getProject());
 
-        Configuration clientImpl = ConfigurationUtil.getClientConfiguration(getProject());
-        Configuration commonImpl = ConfigurationUtil.getCommonConfiguration(getProject());
-        Configuration serverImpl = ConfigurationUtil.getServerConfiguration(getProject());
+//        Configuration clientImpl = ConfigurationUtil.getClientConfiguration(getProject());
+//        Configuration commonImpl = ConfigurationUtil.getCommonConfiguration(getProject());
+//        Configuration serverImpl = ConfigurationUtil.getServerConfiguration(getProject());
 
-        add(getProject(), "client", object, clientTransform, clientTransform.getName());
-        add(getProject(), "common", object, commonTransform, commonTransform.getName());
-        add(getProject(), "server", object, serverTransform, serverTransform.getName());
+//        add(getProject(), "client", object, clientTransform, clientTransform.getName());
+//        add(getProject(), "common", object, commonTransform, commonTransform.getName());
+//        add(getProject(), "server", object, serverTransform, serverTransform.getName());
 
-        add(getProject(), "client", object, clientImpl, clientImpl.getName());
-        add(getProject(), "common", object, commonImpl, commonImpl.getName());
-        add(getProject(), "server", object, serverImpl, serverImpl.getName());
+//        add(getProject(), "client", object, clientImpl, clientTransform.getName());
+//        add(getProject(), "common", object, commonImpl, commonTransform.getName());
+//        add(getProject(), "server", object, serverImpl, serverTransform.getName());
+
+        add(getProject(), "client", object, getProject().getConfigurations().getByName("clientImpl"), "clientImpl");
+        add(getProject(), "common", object, getProject().getConfigurations().getByName("commonImpl"), "commonImpl");
+        add(getProject(), "server", object, getProject().getConfigurations().getByName("serverImpl"), "serverImpl");
 
         JsonArray repos = new JsonArray();
         getProject().getRepositories().forEach(r -> {
@@ -82,9 +87,15 @@ public class DependenciesJson extends DefaultTask {
     }
 
     private static void add(Project project, String side, JsonObject o, Configuration configuration, String type) {
+        JsonValue jsonValue = o.get(side);
         JsonArray array;
-        if (o.get(side) == null) array = new JsonArray();
-        else array = o.get(side).asArray();
+
+        if (jsonValue != null){
+            array = jsonValue.asArray();
+        }else {
+            array = new JsonArray();
+            o.add(side, array);
+        }
 
         if (!configuration.isCanBeResolved()) return;
 
@@ -142,7 +153,5 @@ public class DependenciesJson extends DefaultTask {
             obj.add("artifactUrl", repoUrl);
             array.add(obj);
         }
-
-        o.add(side, array);
     }
 }

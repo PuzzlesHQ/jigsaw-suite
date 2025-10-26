@@ -22,7 +22,7 @@ public class Publishing extends AbstractJigsawPlugin {
 
 
         ExtensionContainer extensionContainer = project.getExtensions();
-        publishingExtension = extensionContainer.create("jigsawInject", PublishingExtension.class, project, project.getObjects());
+        publishingExtension = extensionContainer.create("jigsawPublishing", PublishingExtension.class, project, project.getObjects());
 
 
 
