@@ -12,6 +12,7 @@ public class RunVanillaClientTask extends JavaExec {
         setGroup("jigsaw/runs");
 
         getMainClass().set("dev.puzzleshq.puzzleloader.loader.launch.pieces.ClientPiece");
+
         jvmArgs(
                 "-Dpuzzle.core.disable-patching=true",
                 "-Dpuzzle.core.disable-mod-search=true",
@@ -21,6 +22,9 @@ public class RunVanillaClientTask extends JavaExec {
         args(
                 "--mod-folder", "\"" + new File(JigsawGame.runDir, "pmods").getAbsolutePath() + "\""
         );
+
+        dependsOn("buildMergedJar");
+
 
         ConfigurableFileCollection collection = (ConfigurableFileCollection) getClasspath();
         collection.from(JigsawGame.CLIENT_SOURCE_SET.getRuntimeClasspath().getFiles());

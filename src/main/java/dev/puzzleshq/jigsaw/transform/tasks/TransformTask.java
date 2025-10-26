@@ -28,7 +28,7 @@ public class TransformTask extends DefaultTask {
 
     @TaskAction
     public void execute() {
-        FileUtil.delete(JigsawTransform.transformDir);
+        FileUtil.delete(JigsawTransform.transformCache);
 
         for (Map.Entry<String, Configuration> stringConfigurationEntry : JigsawTransform.configurationMap.entrySet()) {
             Configuration configuration = stringConfigurationEntry.getValue();

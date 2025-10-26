@@ -11,10 +11,12 @@ public class RunServerTask extends JavaExec {
     public RunServerTask() {
         setGroup("jigsaw/runs");
 
-        getMainClass().set("dev.puzzleshq.puzzleloader.loader.launch.pieces.ServerPiece");
         args(
                 "--mod-folder", "\"" + new File(JigsawGame.runDir, "pmods").getAbsolutePath() + "\""
         );
+        getMainClass().set("dev.puzzleshq.puzzleloader.loader.launch.pieces.ServerPiece");
+
+        dependsOn("buildMergedJar");
 
         ConfigurableFileCollection collection = (ConfigurableFileCollection) getClasspath();
         collection.from(JigsawGame.SERVER_SOURCE_SET.getRuntimeClasspath().getFiles());
