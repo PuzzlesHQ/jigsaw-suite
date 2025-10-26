@@ -58,6 +58,9 @@ public class GameExtension extends AbstractJigsawExtension {
         JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.create("common");
         JigsawGame.SERVER_SOURCE_SET = sourceSetContainer.create("server");
 
+        project.getDependencies().add("clientImplementation", JigsawGame.COMMON_SOURCE_SET.getOutput());
+        project.getDependencies().add("serverImplementation", JigsawGame.COMMON_SOURCE_SET.getOutput());
+
         updateTasks();
 
         JigsawGame.IS_SPLIT = true;
@@ -69,6 +72,8 @@ public class GameExtension extends AbstractJigsawExtension {
         JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.create("common");
         JigsawGame.SERVER_SOURCE_SET = JigsawGame.COMMON_SOURCE_SET;
 
+        project.getDependencies().add("clientImplementation", JigsawGame.COMMON_SOURCE_SET.getOutput());
+
         updateTasks();
 
         JigsawGame.IS_CLIENT_SPLIT = true;
@@ -79,6 +84,8 @@ public class GameExtension extends AbstractJigsawExtension {
         JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.create("common");
         JigsawGame.SERVER_SOURCE_SET = sourceSetContainer.create("server");
         JigsawGame.CLIENT_SOURCE_SET = JigsawGame.COMMON_SOURCE_SET;
+
+        project.getDependencies().add("serverImplementation", JigsawGame.COMMON_SOURCE_SET.getOutput());
 
         updateTasks();
 
