@@ -1,5 +1,6 @@
 package dev.puzzleshq.jigsaw.zomboid;
 
+import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.game.GameExtension;
 import dev.puzzleshq.jigsaw.transform.JigsawTransform;
 import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
@@ -53,7 +54,7 @@ public class ZomboidPlugin extends AbstractJigsawPlugin {
 
         json = (LazyMap) new JsonSlurper().parse(new File(zomboidPath.toString(), "ProjectZomboid64.json"));
 
-        gameJar = project.file("build/projectZomboid.jar");
+        gameJar = new File(JigsawTransform.jarCache, "projectZomboid.jar");
         gameJar.getParentFile().mkdirs();
 
         ZomboidUtil.addJarToDeps(project, gameJar);
