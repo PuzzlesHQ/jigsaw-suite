@@ -41,6 +41,7 @@ dependencies {
     implementation "org.hjson:hjson:3.1.0"
 
     implementation "com.gradleup.shadow:shadow-gradle-plugin:8.3.8"
+    implementation("io.github.sgtsilvio.gradle.maven-central-publishing:io.github.sgtsilvio.gradle.maven-central-publishing.gradle.plugin:0.4.1")
 }
 
 gradlePlugin {
@@ -54,6 +55,16 @@ gradlePlugin {
             id = 'jigsaw-project-zomboid'
             implementationClass = 'dev.puzzleshq.jigsaw.premade.ProjectZomboidPlugin'
         }
+
+//        puzzle_publishing {
+//            id = 'jigsaw-puzzle-publishing'
+//            implementationClass = 'dev.puzzleshq.jigsaw.premade.PuzzlePublishing'
+//        }
+//
+//        publishing {
+//            id = 'jigsaw-publishing'
+//            implementationClass = 'dev.puzzleshq.jigsaw.publishing.Publishing'
+//        }
 
         sync {
             id = 'jigsaw-sync'
@@ -137,6 +148,10 @@ publishing {
                         id = 'mrzombii'
                         name = 'Mr Zombii'
                         email = 'thezombiigames@gmail.com'
+                    }
+                    developer {
+                        id = 'crab-k1ng'
+                        name = 'CrabKing'
                     }
                 }
                 scm {

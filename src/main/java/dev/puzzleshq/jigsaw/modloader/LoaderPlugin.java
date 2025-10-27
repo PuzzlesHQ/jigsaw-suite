@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class LoaderPlugin extends AbstractJigsawPlugin {
 
-    public static final File MANIFEST_LOCATIONS = new File(Plugins.jigsawDir, "loader/");
+    public static final File MANIFEST_LOCATIONS = new File(Plugins.globalJigsawDir, "loader/");
     public static final URL PUZZLE_CORE_MANIFEST_URL;
 
     static {

@@ -54,7 +54,7 @@ public class ZomboidPlugin extends AbstractJigsawPlugin {
 
         json = (LazyMap) new JsonSlurper().parse(new File(zomboidPath.toString(), "ProjectZomboid64.json"));
 
-        gameJar = new File(JigsawTransform.jarCache, "projectZomboid.jar");
+        gameJar = new File(JigsawTransform.jarCache, "local-file/project-zomboid/0.0.0/project-zomboid-0.0.0.jar");
         gameJar.getParentFile().mkdirs();
 
         ZomboidUtil.addJarToDeps(project, gameJar);

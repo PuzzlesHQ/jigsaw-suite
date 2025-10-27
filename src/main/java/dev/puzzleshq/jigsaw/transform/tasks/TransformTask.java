@@ -2,22 +2,17 @@ package dev.puzzleshq.jigsaw.transform.tasks;
 
 import dev.puzzleshq.jigsaw.transform.JigsawFileArtifact;
 import dev.puzzleshq.jigsaw.transform.JigsawTransform;
-import dev.puzzleshq.jigsaw.util.DepUtils;
 import dev.puzzleshq.jigsaw.util.FileUtil;
 import dev.puzzleshq.jigsaw.util.JarTransformer;
 import org.gradle.api.DefaultTask;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.DependencySet;
-import org.gradle.api.artifacts.ExternalModuleDependency;
+import org.gradle.api.artifacts.*;
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
 import org.gradle.api.artifacts.result.ResolvedArtifactResult;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.internal.hash.Hashing;
+import org.gradle.internal.component.external.model.ModuleComponentArtifactIdentifier;
 
 import java.io.File;
-import java.util.ArrayDeque;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Queue;
+import java.util.*;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class TransformTask extends DefaultTask {
@@ -37,16 +32,37 @@ public class TransformTask extends DefaultTask {
 
             Queue<JigsawFileArtifact> toBeTransformed = new ArrayDeque<>();
 
+            ResolvedConfiguration resolvedConfiguration = configuration.getResolvedConfiguration();
+            Set<ResolvedArtifact> resolvedArtifacts = resolvedConfiguration.getResolvedArtifacts();
+
             for (ResolvedArtifactResult artifact : configuration.getIncoming().getArtifacts()) {
-                String hash = Hashing.sha256().hashBytes(artifact.getFile().getName().getBytes()).toString();
-                hash = hash.substring(0, 4) + hash.substring(hash.length() - 4);
+                if (artifact.getId() instanceof ModuleComponentArtifactIdentifier) continue;
 
                 toBeTransformed.add(new JigsawFileArtifact(
                         artifact.getFile(),
                         stringConfigurationEntry.getKey(),
-                        artifact.getId().getDisplayName(),
-                        hash
+                        artifact.getId().toString(),
+                        true
                 ));
+            }
+            for (ResolvedArtifact resolvedArtifact : resolvedArtifacts) {
+                if (resolvedArtifact.getId().getComponentIdentifier() instanceof ModuleComponentIdentifier) {
+                    ModuleComponentIdentifier identifier = (ModuleComponentIdentifier) resolvedArtifact.getId().getComponentIdentifier();
+                    String group = identifier.getGroup();
+                    String artifact = identifier.getModule();
+                    String version = identifier.getVersion();
+                    String classifier = resolvedArtifact.getClassifier();
+                    String extension = resolvedArtifact.getExtension();
+
+                    String notation = group + ":" + artifact + ":" + version + ":" + classifier + "@" + extension;
+
+                    toBeTransformed.add(new JigsawFileArtifact(
+                            resolvedArtifact.getFile(),
+                            stringConfigurationEntry.getKey(),
+                            notation,
+                            false
+                    ));
+                }
             }
 
             while (!toBeTransformed.isEmpty()) {
@@ -57,7 +73,7 @@ public class TransformTask extends DefaultTask {
                     transformedFile.delete();
 
                 ((ExternalModuleDependency) Objects.requireNonNull(getProject().getDependencies()
-                        .add(artifact.getConfiguration(), artifact.getNotation2()))).setChanging(true);
+                        .add(artifact.getConfiguration(), artifact.getTransformedNotation()))).setChanging(true);
                 JarTransformer.process(
                         artifact.getRegularFile(),
                         JigsawTransform.PLUGIN_CLASS_PREPROCESSOR_MAP.values(),

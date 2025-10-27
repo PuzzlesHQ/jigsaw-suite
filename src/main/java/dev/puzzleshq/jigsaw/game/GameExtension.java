@@ -54,9 +54,9 @@ public class GameExtension extends AbstractJigsawExtension {
 
     public void splitSourceSets() {
         SourceSetContainer sourceSetContainer = project.getExtensions().getByType(SourceSetContainer.class);
-        JigsawGame.CLIENT_SOURCE_SET = sourceSetContainer.create("client");
-        JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.create("common");
-        JigsawGame.SERVER_SOURCE_SET = sourceSetContainer.create("server");
+        JigsawGame.CLIENT_SOURCE_SET = sourceSetContainer.maybeCreate("client");
+        JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.maybeCreate("common");
+        JigsawGame.SERVER_SOURCE_SET = sourceSetContainer.maybeCreate("server");
 
         project.getDependencies().add("clientImplementation", JigsawGame.COMMON_SOURCE_SET.getOutput());
         project.getDependencies().add("serverImplementation", JigsawGame.COMMON_SOURCE_SET.getOutput());
@@ -68,8 +68,8 @@ public class GameExtension extends AbstractJigsawExtension {
 
     public void clientSourceSetOnly() {
         SourceSetContainer sourceSetContainer = project.getExtensions().getByType(SourceSetContainer.class);
-        JigsawGame.CLIENT_SOURCE_SET = sourceSetContainer.create("client");
-        JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.create("common");
+        JigsawGame.CLIENT_SOURCE_SET = sourceSetContainer.maybeCreate("client");
+        JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.maybeCreate("common");
         JigsawGame.SERVER_SOURCE_SET = JigsawGame.COMMON_SOURCE_SET;
 
         project.getDependencies().add("clientImplementation", JigsawGame.COMMON_SOURCE_SET.getOutput());
@@ -81,8 +81,8 @@ public class GameExtension extends AbstractJigsawExtension {
 
     public void serverSourceSetOnly() {
         SourceSetContainer sourceSetContainer = project.getExtensions().getByType(SourceSetContainer.class);
-        JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.create("common");
-        JigsawGame.SERVER_SOURCE_SET = sourceSetContainer.create("server");
+        JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.maybeCreate("common");
+        JigsawGame.SERVER_SOURCE_SET = sourceSetContainer.maybeCreate("server");
         JigsawGame.CLIENT_SOURCE_SET = JigsawGame.COMMON_SOURCE_SET;
 
         project.getDependencies().add("serverImplementation", JigsawGame.COMMON_SOURCE_SET.getOutput());
@@ -94,7 +94,7 @@ public class GameExtension extends AbstractJigsawExtension {
 
     public void mergedSourceSets() {
         SourceSetContainer sourceSetContainer = project.getExtensions().getByType(SourceSetContainer.class);
-        JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.getByName("main");
+        JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.maybeCreate("main");
         JigsawGame.SERVER_SOURCE_SET = JigsawGame.COMMON_SOURCE_SET;
         JigsawGame.CLIENT_SOURCE_SET = JigsawGame.COMMON_SOURCE_SET;
 

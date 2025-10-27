@@ -4,9 +4,10 @@ import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.*;
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
 import org.gradle.api.artifacts.result.ResolvedArtifactResult;
 import org.gradle.api.tasks.SourceSetContainer;
-import org.gradle.internal.hash.Hashing;
+import org.gradle.internal.component.external.model.ModuleComponentArtifactIdentifier;
 import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -36,7 +37,7 @@ public class JigsawTransform extends AbstractJigsawPlugin {
         if (jarCache == null) {
             transformDir = new File(Plugins.jigsawDir, "transform");
             jarCache = new File(transformDir, "jar-cache");
-            transformCache = new File(transformDir, "transform-cache");
+            transformCache = new File(transformDir, "cache");
         }
         TransformTasks.registerTasks(target);
 
@@ -99,24 +100,47 @@ public class JigsawTransform extends AbstractJigsawPlugin {
             Queue<JigsawFileArtifact> toBeTransformed = new ArrayDeque<>();
             System.out.println("\u001B[1;94m\t ↳ \u001B[1;0mSearching for dependencies using the \u001B[0;32m'" + configuration.getName() + "'\u001B[0;0m configuration");
 
+            ResolvedConfiguration resolvedConfiguration = configuration.getResolvedConfiguration();
+            Set<ResolvedArtifact> resolvedArtifacts = resolvedConfiguration.getResolvedArtifacts();
+
             for (ResolvedArtifactResult artifact : configuration.getIncoming().getArtifacts()) {
-                System.out.println("\u001B[1;95m\t\t ↳ \u001B[1;0m Found artifact \u001B[0;36m'" + artifact + "'\u001B[0;0m");
-                String hash = Hashing.sha256().hashBytes(artifact.getFile().getName().getBytes()).toString();
-                hash = hash.substring(0, 4) + hash.substring(hash.length() - 4);
+                if (artifact.getId() instanceof ModuleComponentArtifactIdentifier) continue;
+
+                System.out.println("\u001B[1;95m\t\t ↳ \u001B[1;0m Found local artifact \u001B[0;36m'" + artifact.getId() + "'\u001B[0;0m");
 
                 toBeTransformed.add(new JigsawFileArtifact(
                         artifact.getFile(),
                         stringConfigurationEntry.getKey(),
-                        artifact.getId().getDisplayName(),
-                        hash
+                        artifact.getId().toString(),
+                        true
                 ));
+            }
+            for (ResolvedArtifact resolvedArtifact : resolvedArtifacts) {
+                if (resolvedArtifact.getId().getComponentIdentifier() instanceof ModuleComponentIdentifier) {
+                    ModuleComponentIdentifier identifier = (ModuleComponentIdentifier) resolvedArtifact.getId().getComponentIdentifier();
+                    String group = identifier.getGroup();
+                    String artifact = identifier.getModule();
+                    String version = identifier.getVersion();
+                    String classifier = resolvedArtifact.getClassifier();
+                    String extension = resolvedArtifact.getExtension();
+
+                    String notation = group + ":" + artifact + ":" + version + ":" + classifier + "@" + extension;
+                    System.out.println("\u001B[1;95m\t\t ↳ \u001B[1;0m Found artifact \u001B[0;36m'" + notation + "'\u001B[0;0m");
+
+                    toBeTransformed.add(new JigsawFileArtifact(
+                            resolvedArtifact.getFile(),
+                            stringConfigurationEntry.getKey(),
+                            notation,
+                            false
+                    ));
+                }
             }
 
             while (!toBeTransformed.isEmpty()) {
                 JigsawFileArtifact artifact = toBeTransformed.remove();
 
                 ((ExternalModuleDependency) Objects.requireNonNull(project.getDependencies()
-                        .add(artifact.getConfiguration(), artifact.getNotation2()))).setChanging(true);
+                        .add(artifact.getConfiguration(), artifact.getTransformedNotation()))).setChanging(true);
             }
         }
     }

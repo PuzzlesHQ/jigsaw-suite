@@ -1,0 +1,96 @@
+plugins {
+    id 'java'
+
+    id 'jigsaw-sync'
+    id 'jigsaw-game'
+    id 'jigsaw-access'
+    id 'jigsaw-inject'
+    id 'jigsaw-transform'
+    id 'jigsaw-loader'
+
+//    id 'jigsaw-zomboid'
+    id 'jigsaw-cosmic'
+
+
+//    id "jigsaw-puzzle-publishing"
+    id "jigsaw-publishing"
+
+
+    id 'com.gradleup.shadow'
+}
+
+group = 'dev.puzzleshq'
+version = '0.0.0-beta'
+
+repositories {
+    mavenCentral()
+}
+
+jigsawGame {
+    splitSourceSets()
+}
+
+dependencies {
+    puzzleLoader "dev.puzzleshq:puzzle-loader-core:1.3.4-alpha"
+    puzzleLoader "dev.puzzleshq:puzzle-loader-cosmic:1.5.2-alpha"
+    cosmicReach "finalforeach:cosmic-reach:0.5.7-alpha"
+
+    clientIncludedDependency "dev.puzzleshq:puzzle-loader-core:1.3.4-alpha:client"
+    serverIncludedDependency "dev.puzzleshq:puzzle-loader-core:1.3.4-alpha:server"
+    commonIncludedDependency "dev.puzzleshq:puzzle-loader-core:1.3.4-alpha:common"
+}
+
+//puzzlePublishing {
+//    crabking(true)
+//    zombii(true)
+//    replet(true)
+//    spicylemon(true)
+//}
+
+//jigsawPublishing {
+//
+//    setPublishingVersion("1.0.0")
+//    setPublishingUrl("https://github.com/PuzzlesHq/puzzle-loader-zomboid")
+//
+//    // --- Repositories ---
+//    repos {
+//        register("PuzzleHQsMaven") {
+//            setRepo("releases")
+//            setUrl("https://maven.puzzlehq.dev/releases")
+//            setUsername("MAVEN_NAME")
+//            setPassword("MAVEN_SECRET")
+//        }
+//
+//        register("BackupRepo") {
+//            setRepo("snapshots")
+//            setUrl("https://backup.puzzlehq.dev/snapshots")
+//            setUsername("MAVEN_NAME")
+//            setPassword("MAVEN_SECRET")
+//        }
+//    }
+//
+//    // --- Licenses ---
+//    licenses {
+//        register("LGPL") {
+//            setName("GNU Lesser General Public License")
+//            setUrl("https://www.gnu.org/licenses/lgpl-3.0.html")
+//            setDistribution("LGPL")
+//            setComments("This project includes LGPL-licensed components.")
+//        }
+//    }
+//
+//    // --- Developers ---
+//    developers {
+//        register("mrzombii") {
+//            setId("mrzombii")
+//            setName("Mr Zombii")
+//            setEmail("thezombiigames@gmail.com")
+//        }
+//
+//        register("alice") {
+//            setId("alice")
+//            setName("Alice Dev")
+//            setEmail("alice@example.com")
+//        }
+//    }
+//}
