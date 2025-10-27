@@ -13,8 +13,9 @@ public class RunClientTask extends JavaExec {
         args(
                 "--mod-folder", "\"" + new File(JigsawGame.runDir, "pmods").getAbsolutePath() + "\""
         );
-
         getMainClass().set("dev.puzzleshq.puzzleloader.loader.launch.pieces.ClientPiece");
+
+        dependsOn("buildMergedJar");
 
         ConfigurableFileCollection collection = (ConfigurableFileCollection) getClasspath();
         collection.from(JigsawGame.CLIENT_SOURCE_SET.getRuntimeClasspath().getFiles());

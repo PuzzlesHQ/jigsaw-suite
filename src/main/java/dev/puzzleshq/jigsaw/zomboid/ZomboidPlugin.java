@@ -1,5 +1,6 @@
 package dev.puzzleshq.jigsaw.zomboid;
 
+import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.game.GameExtension;
 import dev.puzzleshq.jigsaw.transform.JigsawTransform;
 import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
