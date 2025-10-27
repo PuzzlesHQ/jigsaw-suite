@@ -56,15 +56,15 @@ gradlePlugin {
             implementationClass = 'dev.puzzleshq.jigsaw.premade.ProjectZomboidPlugin'
         }
 
-//        puzzle_publishing {
-//            id = 'jigsaw-puzzle-publishing'
-//            implementationClass = 'dev.puzzleshq.jigsaw.premade.PuzzlePublishing'
-//        }
-//
-//        publishing {
-//            id = 'jigsaw-publishing'
-//            implementationClass = 'dev.puzzleshq.jigsaw.publishing.Publishing'
-//        }
+        puzzle_publishing {
+            id = 'jigsaw-puzzle-publishing'
+            implementationClass = 'dev.puzzleshq.jigsaw.premade.PuzzlePublishing'
+        }
+
+        publishing {
+            id = 'jigsaw-publishing'
+            implementationClass = 'dev.puzzleshq.jigsaw.publishing.Publishing'
+        }
 
         sync {
             id = 'jigsaw-sync'
