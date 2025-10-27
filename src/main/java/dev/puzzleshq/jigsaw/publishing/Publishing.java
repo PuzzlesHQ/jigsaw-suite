@@ -1,20 +1,16 @@
 package dev.puzzleshq.jigsaw.publishing;
 
-import dev.puzzleshq.jigsaw.publishing.config.MavenDeveloper;
 import dev.puzzleshq.jigsaw.publishing.config.MavenLicense;
 import dev.puzzleshq.jigsaw.publishing.config.MavenRepo;
 import dev.puzzleshq.jigsaw.publishing.tasks.DependenciesJson;
-import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
+import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.publish.PublishingExtension;
 import org.gradle.api.publish.maven.MavenPublication;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.plugins.signing.SigningExtension;
-
-import java.net.URI;
 
 public class Publishing extends AbstractJigsawPlugin {
 

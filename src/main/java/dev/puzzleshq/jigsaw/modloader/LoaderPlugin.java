@@ -1,11 +1,10 @@
 package dev.puzzleshq.jigsaw.modloader;
 
 import dev.puzzleshq.jigsaw.Plugins;
-import dev.puzzleshq.jigsaw.game.JigsawGame;
-import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
+import dev.puzzleshq.jigsaw.StringConstants;
+import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.util.ConfigurationUtil;
 import dev.puzzleshq.jigsaw.util.JavaUtils;
-import org.apache.groovy.json.internal.IO;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
@@ -20,7 +19,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class LoaderPlugin extends AbstractJigsawPlugin {
@@ -114,7 +112,7 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
 
     private void processDependenciesObject(Project project, Configuration clientConfig, Configuration commonConfig, Configuration serverConfig, JsonObject dependenciesObject) {
         BiConsumer<String, String> check = (side, configuration) -> {
-            JsonArray commonArray = dependenciesObject.get("common").asArray();
+            JsonArray commonArray = dependenciesObject.get(StringConstants.COMMON_SIDE).asArray();
 
             for (JsonValue value : commonArray) {
                 JsonObject object = value.asObject();
@@ -124,7 +122,7 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
                 String version = object.get("version").asString();
                 String type = object.get("type").asString();
 
-                if (type.equals("compileOnly")) continue;
+                if (type.equals(StringConstants.COMPILE_ONLY_CONFIGURATION)) continue;
 
                 String artifact = groupId + ":" + artifactId + ":" + version;
 
@@ -151,14 +149,14 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
         }
 
         if (clientConfig != null) {
-            check.accept("client", clientConfig.getName());
-            check.accept("common", clientConfig.getName());
+            check.accept(StringConstants.CLIENT_SIDE, clientConfig.getName());
+            check.accept(StringConstants.COMMON_SIDE, clientConfig.getName());
         }
         if (commonConfig != null)
-            check.accept("common", commonConfig.getName());
+            check.accept(StringConstants.COMMON_SIDE, commonConfig.getName());
         if (serverConfig != null) {
-            check.accept("server", serverConfig.getName());
-            check.accept("common", serverConfig.getName());
+            check.accept(StringConstants.SERVER_SIDE, serverConfig.getName());
+            check.accept(StringConstants.COMMON_SIDE, serverConfig.getName());
         }
     }
 

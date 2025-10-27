@@ -3,7 +3,7 @@ package dev.puzzleshq.jigsaw.publishing;
 import dev.puzzleshq.jigsaw.publishing.config.MavenDeveloper;
 import dev.puzzleshq.jigsaw.publishing.config.MavenLicense;
 import dev.puzzleshq.jigsaw.publishing.config.MavenRepo;
-import dev.puzzleshq.jigsaw.util.AbstractJigsawExtension;
+import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawExtension;
 import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.model.ObjectFactory;

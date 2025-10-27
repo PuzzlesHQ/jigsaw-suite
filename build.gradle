@@ -72,15 +72,15 @@ gradlePlugin {
         }
         access {
             id = 'jigsaw-access'
-            implementationClass = 'dev.puzzleshq.jigsaw.access.JigsawAccess'
+            implementationClass = 'dev.puzzleshq.jigsaw.bytecode.access.JigsawAccess'
         }
         interface_inject {
             id = 'jigsaw-inject'
-            implementationClass = 'dev.puzzleshq.jigsaw.inject.JigsawInject'
+            implementationClass = 'dev.puzzleshq.jigsaw.bytecode.inject.JigsawInject'
         }
         game {
             id = 'jigsaw-game'
-            implementationClass = 'dev.puzzleshq.jigsaw.game.JigsawGame'
+            implementationClass = 'dev.puzzleshq.jigsaw.gamesupport.game.JigsawGame'
         }
         loader {
             id = 'jigsaw-loader'
@@ -88,19 +88,19 @@ gradlePlugin {
         }
         zomboid {
             id = 'jigsaw-zomboid'
-            implementationClass = 'dev.puzzleshq.jigsaw.zomboid.ZomboidPlugin'
+            implementationClass = 'dev.puzzleshq.jigsaw.gamesupport.zomboid.ZomboidPlugin'
         }
         cosmic {
             id = 'jigsaw-cosmic'
-            implementationClass = 'dev.puzzleshq.jigsaw.cosmic.CosmicPlugin'
+            implementationClass = 'dev.puzzleshq.jigsaw.gamesupport.cosmic.CosmicPlugin'
         }
         remap {
             id = 'jigsaw-remap'
-            implementationClass = 'dev.puzzleshq.jigsaw.remap.JigsawRemap'
+            implementationClass = 'dev.puzzleshq.jigsaw.bytecode.remap.JigsawRemap'
         }
         transform {
             id = 'jigsaw-transform'
-            implementationClass = 'dev.puzzleshq.jigsaw.transform.JigsawTransform'
+            implementationClass = 'dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform'
         }
     }
 }
