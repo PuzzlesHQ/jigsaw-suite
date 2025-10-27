@@ -149,6 +149,10 @@ publishing {
                         name = 'Mr Zombii'
                         email = 'thezombiigames@gmail.com'
                     }
+                    developer {
+                        id = 'crab-k1ng'
+                        name = 'CrabKing'
+                    }
                 }
                 scm {
                     connection = "${p_git}.git"
