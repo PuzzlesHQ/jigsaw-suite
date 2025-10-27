@@ -86,24 +86,24 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin {
 
                     localPath += "/" + dependency.getName() + "-" + dependency.getVersion();
 
-                    clientNotation.set("global." + dependency.getGroup() + ":" + dependency.getName() + ":" + dependency.getVersion() + ":client");
-                    commonNotation.set("global." + dependency.getGroup() + ":" + dependency.getName() + ":" + dependency.getVersion() + ":common");
-                    serverNotation.set("global." + dependency.getGroup() + ":" + dependency.getName() + ":" + dependency.getVersion() + ":server");
+                    clientNotation.set("global." + dependency.getGroup() + ":" + dependency.getName() + ":" + dependency.getVersion() + ":" + StringConstants.CLIENT_SIDE);
+                    commonNotation.set("global." + dependency.getGroup() + ":" + dependency.getName() + ":" + dependency.getVersion() + ":" + StringConstants.COMMON_SIDE);
+                    serverNotation.set("global." + dependency.getGroup() + ":" + dependency.getName() + ":" + dependency.getVersion() + ":" + StringConstants.SERVER_SIDE);
                     mergedNotation.set("global." + dependency.getGroup() + ":" + dependency.getName() + ":" + dependency.getVersion() + ":merged");
 
                     clientOut.set(new File(
                             globalJigsawMaven, localPath +
-                            "-client.jar"
+                            "-" + StringConstants.CLIENT_SIDE +".jar"
                     ));
 
                     commonOut.set(new File(
                             globalJigsawMaven, localPath +
-                            "-common.jar"
+                            "-" + StringConstants.COMMON_SIDE + ".jar"
                     ));
 
                     serverOut.set(new File(
                             globalJigsawMaven, localPath +
-                            "-server.jar"
+                            "-" + StringConstants.SERVER_SIDE + ".jar"
                     ));
 
                     mergedOut.set(new File(
@@ -135,8 +135,8 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin {
                 for (Dependency dependency : configuration.getDependencies()) {
                     String dependencyName = dependency.getGroup() + ":" + dependency.getName() + ":" + dependency.getVersion();
 
-                    dependencyHandler.add(configurationNameInternal, dependencyName + ":client");
-                    dependencyHandler.add(configurationNameInternal, dependencyName + ":server");
+                    dependencyHandler.add(configurationNameInternal, dependencyName + ":" + StringConstants.CLIENT_SIDE);
+                    dependencyHandler.add(configurationNameInternal, dependencyName + ":" + StringConstants.SERVER_SIDE);
 
                 }
             }

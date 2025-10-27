@@ -41,7 +41,7 @@ public class ZomboidUtil {
             ConfigurableFileCollection absPath = project.files(jar.getAbsolutePath());
 
             JigsawTransform.configurationMap.forEach((s, configuration) -> {
-                if (s.toLowerCase().contains("compileonly")) {
+                if (s.toLowerCase().contains(StringConstants.COMPILE_ONLY_CONFIGURATION)) {
                     project.getDependencies().add(configuration.getName(), absPath);
                 }
             });
@@ -60,9 +60,9 @@ public class ZomboidUtil {
         }
         ConfigurableFileCollection absPath = project.files(jar.getAbsolutePath());
 
-        project.getDependencies().add("clientCompileOnly", absPath);
-        project.getDependencies().add("commonCompileOnly", absPath);
-        project.getDependencies().add("serverCompileOnly", absPath);
+        project.getDependencies().add(StringConstants.CLIENT_COMPILE_ONLY_CONFIGURATION, absPath);
+        project.getDependencies().add(StringConstants.COMMON_COMPILE_ONLY_CONFIGURATION, absPath);
+        project.getDependencies().add(StringConstants.SERVER_COMPILE_ONLY_CONFIGURATION, absPath);
     }
 
     private static void addEntry(ZipOutputStream zip, String dir, File file) throws IOException {

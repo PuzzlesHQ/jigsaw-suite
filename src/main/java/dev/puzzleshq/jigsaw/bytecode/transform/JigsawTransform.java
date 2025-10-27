@@ -46,7 +46,7 @@ public class JigsawTransform extends AbstractJigsawPlugin {
         SourceSetContainer sourceSetContainer = target.getExtensions().getByType(SourceSetContainer.class);
 
         sourceSetContainer.all(sourceSet -> {
-            if (sourceSet.getName().equals("main")) {
+            if (sourceSet.getName().equals(StringConstants.MAIN)) {
                 Configuration impl = configurations.register(StringConstants.TRANSFORM_CONFIGURATION).get();
                 configurationMap.put(StringConstants.IMPLEMENTATION_CONFIGURATION, impl);
                 Configuration compile = configurations.register(StringConstants.COMPILE_ONLY_TRANSFORM_CONFIGURATION).get();

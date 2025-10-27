@@ -29,7 +29,7 @@ public class GameExtension extends AbstractJigsawExtension {
             container.register("buildCommonJar", BuildCommonJarTask.class);
         }
 
-        if (JigsawGame.COMMON_SOURCE_SET.getName().equals("main")) { // check for merged environment
+        if (JigsawGame.COMMON_SOURCE_SET.getName().equals(StringConstants.MAIN)) { // check for merged environment
             container.register("buildMergedJar", BuildSingleJarTask.class);
             container.register("buildSourcesJar", BuildSimpleSourcesJarTask.class);
         } else {
@@ -95,7 +95,7 @@ public class GameExtension extends AbstractJigsawExtension {
 
     public void mergedSourceSets() {
         SourceSetContainer sourceSetContainer = project.getExtensions().getByType(SourceSetContainer.class);
-        JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.maybeCreate("main");
+        JigsawGame.COMMON_SOURCE_SET = sourceSetContainer.maybeCreate(StringConstants.MAIN);
         JigsawGame.SERVER_SOURCE_SET = JigsawGame.COMMON_SOURCE_SET;
         JigsawGame.CLIENT_SOURCE_SET = JigsawGame.COMMON_SOURCE_SET;
 

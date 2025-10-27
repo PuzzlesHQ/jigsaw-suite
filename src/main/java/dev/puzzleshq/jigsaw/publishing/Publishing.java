@@ -1,5 +1,6 @@
 package dev.puzzleshq.jigsaw.publishing;
 
+import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.publishing.config.MavenLicense;
 import dev.puzzleshq.jigsaw.publishing.config.MavenRepo;
 import dev.puzzleshq.jigsaw.publishing.tasks.DependenciesJson;
@@ -26,7 +27,7 @@ public class Publishing extends AbstractJigsawPlugin {
 
         ConfigurationContainer configurations = project.getConfigurations();
         sourceSetContainer.all(sourceSet -> {
-            if (sourceSet.getName().equals("main")) {
+            if (sourceSet.getName().equals(StringConstants.MAIN)) {
                 configurations.register("includedDependency").get();
                 return;
             }

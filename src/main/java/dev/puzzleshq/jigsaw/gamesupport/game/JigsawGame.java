@@ -38,7 +38,7 @@ public class JigsawGame extends AbstractJigsawPlugin {
         SourceSetContainer sourceSetContainer = target.getExtensions().getByType(SourceSetContainer.class);
 
         sourceSetContainer.all(sourceSet -> {
-            if (sourceSet.getName().equals("main")) {
+            if (sourceSet.getName().equals(StringConstants.MAIN)) {
                 Configuration impl = configurations.register(StringConstants.BUNDLE_CONFIGURATION).get();
                 return;
             }
