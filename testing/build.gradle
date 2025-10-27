@@ -11,6 +11,11 @@ plugins {
 //    id 'jigsaw-zomboid'
     id 'jigsaw-cosmic'
 
+
+//    id "jigsaw-puzzle-publishing"
+//    id "jigsaw-publishing"
+
+
     id 'com.gradleup.shadow'
 }
 
@@ -30,3 +35,58 @@ dependencies {
     puzzleLoader "dev.puzzleshq:puzzle-loader-cosmic:1.5.2-alpha"
     cosmicReach "finalforeach:cosmic-reach:0.5.7-alpha"
 }
+
+//puzzlePublishing {
+//    crabking(true)
+//    zombii(true)
+//    replet(true)
+//    spicylemon(true)
+//}
+
+//jigsawPublishing {
+//
+//    setPublishingVersion("1.0.0")
+//    setPublishingUrl("https://github.com/PuzzlesHq/puzzle-loader-zomboid")
+//
+//    // --- Repositories ---
+//    repos {
+//        register("PuzzleHQsMaven") {
+//            setRepo("releases")
+//            setUrl("https://maven.puzzlehq.dev/releases")
+//            setUsername("MAVEN_NAME")
+//            setPassword("MAVEN_SECRET")
+//        }
+//
+//        register("BackupRepo") {
+//            setRepo("snapshots")
+//            setUrl("https://backup.puzzlehq.dev/snapshots")
+//            setUsername("MAVEN_NAME")
+//            setPassword("MAVEN_SECRET")
+//        }
+//    }
+//
+//    // --- Licenses ---
+//    licenses {
+//        register("LGPL") {
+//            setName("GNU Lesser General Public License")
+//            setUrl("https://www.gnu.org/licenses/lgpl-3.0.html")
+//            setDistribution("LGPL")
+//            setComments("This project includes LGPL-licensed components.")
+//        }
+//    }
+//
+//    // --- Developers ---
+//    developers {
+//        register("mrzombii") {
+//            setId("mrzombii")
+//            setName("Mr Zombii")
+//            setEmail("thezombiigames@gmail.com")
+//        }
+//
+//        register("alice") {
+//            setId("alice")
+//            setName("Alice Dev")
+//            setEmail("alice@example.com")
+//        }
+//    }
+//}

@@ -1,5 +1,6 @@
 package dev.puzzleshq.jigsaw.publishing.tasks;
 
+import dev.puzzleshq.jigsaw.publishing.Publishing;
 import dev.puzzleshq.jigsaw.util.ConfigurationUtil;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
@@ -24,7 +25,7 @@ import java.util.Set;
 public class DependenciesJson extends DefaultTask {
 
     public DependenciesJson() {
-        setGroup("jigsaw/publishing");
+        setGroup(Publishing.GROUP);
     }
 
     @TaskAction
