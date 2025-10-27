@@ -50,9 +50,26 @@ public class DependenciesJson extends DefaultTask {
 //        add(getProject(), "common", object, commonImpl, commonTransform.getName());
 //        add(getProject(), "server", object, serverImpl, serverTransform.getName());
 
-        add(getProject(), "client", object, getProject().getConfigurations().getByName("clientImpl"), "clientImpl");
-        add(getProject(), "common", object, getProject().getConfigurations().getByName("commonImpl"), "commonImpl");
-        add(getProject(), "server", object, getProject().getConfigurations().getByName("serverImpl"), "serverImpl");
+        getProject().getConfigurations().all(configuration -> {
+            switch (configuration.getName()) {
+                case "includedDependency": {
+                    add(getProject(), "merged", object, getProject().getConfigurations().getByName("includedDependency"), "implementation");
+                    break;
+                }
+                case "clientIncludedDependency": {
+                    add(getProject(), "client", object, getProject().getConfigurations().getByName("clientIncludedDependency"), "implementation");
+                    break;
+                }
+                case "serverIncludedDependency": {
+                    add(getProject(), "server", object, getProject().getConfigurations().getByName("serverIncludedDependency"), "implementation");
+                    break;
+                }
+                case "commonIncludedDependency": {
+                    add(getProject(), "common", object, getProject().getConfigurations().getByName("commonIncludedDependency"), "implementation");
+                    break;
+                }
+            }
+        });
 
         JsonArray repos = new JsonArray();
         getProject().getRepositories().forEach(r -> {

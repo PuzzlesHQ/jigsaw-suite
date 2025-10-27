@@ -7,24 +7,20 @@ public class JigsawFileArtifact {
     private final File regularFile;
     private final String configuration;
     private final String notation;
-    private final String notation2;
+    private final String transformedNotation;
     private final String localPath;
 
-    public JigsawFileArtifact(File regularFile, String configuration, String notation, String hash) {
+    public JigsawFileArtifact(File regularFile, String configuration, String notation, boolean isFile) {
         this.regularFile = regularFile;
         this.configuration = configuration;
-        if (notation.contains(" (")) {
-            notation = notation.replaceAll("[A-Za-z~`0-9!@#$%^&*.\\- ]*\\(", "");
-            notation = notation.replaceAll("\\)", "");
-        }
-        if (!notation.contains(":")) {
+
+        if (isFile) {
             notation = notation.replace(".jar", "");
             notation = "local-file:" + notation + ":0.0.0@jar";
-        } else {
-            notation += "#" + hash;
         }
         this.notation = notation;
-        this.notation2 = "transform-cache." + notation;
+        this.transformedNotation = "cache." + notation;
+
         if (!notation.contains("@")) notation += "@jar";
 
         String[] notationSplit = notation.split("@");
@@ -36,9 +32,8 @@ public class JigsawFileArtifact {
         path += "/" + strings[2];
         path += "/" + strings[1] + "-" + strings[2];
 
-
         if (strings.length == 4) {
-            path += "-" + strings[0];
+            path += "-" + strings[strings.length - 1];
         }
         path += "." + notationSplit[1];
 
@@ -49,8 +44,8 @@ public class JigsawFileArtifact {
         return notation;
     }
 
-    public String getNotation2() {
-        return notation2;
+    public String getTransformedNotation() {
+        return transformedNotation;
     }
 
     public String getConfiguration() {

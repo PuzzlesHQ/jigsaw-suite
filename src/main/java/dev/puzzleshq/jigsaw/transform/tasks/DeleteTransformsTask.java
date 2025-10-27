@@ -13,7 +13,7 @@ public class DeleteTransformsTask extends DefaultTask {
 
     @TaskAction
     public void execute() {
-        FileUtil.delete(JigsawTransform.transformDir);
+        FileUtil.delete(JigsawTransform.transformCache);
     }
 
 }

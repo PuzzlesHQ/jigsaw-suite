@@ -5,11 +5,12 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
 import java.io.*;
-import java.util.Collection;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -97,6 +98,140 @@ public class JarTransformer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void split(
+            File clientIn, File serverIn,
+            File clientOut, File commonOut, File serverOut
+    ) throws IOException {
+        Map<String, ZipEntry> commonFiles = new HashMap<>();
+        Map<String, ZipEntry> serverFiles = new HashMap<>();
+        Map<String, ZipEntry> clientFiles = new HashMap<>();
+
+        ZipFile clientJarFile = new ZipFile(clientIn);
+        ZipFile serverJarFile = new ZipFile(serverIn);
+
+        Enumeration<? extends ZipEntry> clientJarEntries = clientJarFile.entries();
+        Enumeration<? extends ZipEntry> serverJarEntries = serverJarFile.entries();
+
+        while (clientJarEntries.hasMoreElements()) {
+            ZipEntry entry = clientJarEntries.nextElement();
+            clientFiles.put(entry.getName(), entry);
+        }
+
+        while (serverJarEntries.hasMoreElements()) {
+            ZipEntry entry = serverJarEntries.nextElement();
+            serverFiles.put(entry.getName(), entry);
+        }
+
+        Set<Map.Entry<String, ZipEntry>> clientFileEntries = new HashSet<>(clientFiles.entrySet());
+        for (Map.Entry<String, ZipEntry> stringZipEntryEntry : clientFileEntries) {
+            String fileName = stringZipEntryEntry.getKey();
+            ZipEntry fileEntry = stringZipEntryEntry.getValue();
+
+            if (serverFiles.containsKey(stringZipEntryEntry.getKey())) {
+                clientFiles.remove(fileName);
+                serverFiles.remove(fileName);
+
+                commonFiles.put(fileName, fileEntry);
+            }
+        }
+
+        FileOutputStream clientOutFileStream = new FileOutputStream(clientOut);
+        ZipOutputStream clientOutZipStream = new ZipOutputStream(clientOutFileStream);
+
+        for (ZipEntry value : clientFiles.values()) {
+            clientOutZipStream.putNextEntry(value);
+            InputStream entryStream = clientJarFile.getInputStream(value);
+            byte[] bytes = JavaUtils.readAllBytes(entryStream);
+            entryStream.close();
+            clientOutZipStream.write(bytes);
+        }
+
+        clientOutZipStream.close();
+        clientOutFileStream.close();
+
+        FileOutputStream commonOutFileStream = new FileOutputStream(commonOut);
+        ZipOutputStream commonOutZipStream = new ZipOutputStream(commonOutFileStream);
+
+        for (ZipEntry value : commonFiles.values()) {
+            commonOutZipStream.putNextEntry(value);
+            InputStream entryStream = clientJarFile.getInputStream(value);
+            byte[] bytes = JavaUtils.readAllBytes(entryStream);
+            entryStream.close();
+            commonOutZipStream.write(bytes);
+        }
+
+        commonOutZipStream.close();
+        commonOutFileStream.close();
+
+        FileOutputStream serverOutFileStream = new FileOutputStream(serverOut);
+        ZipOutputStream serverOutZipStream = new ZipOutputStream(serverOutFileStream);
+
+        for (ZipEntry value : serverFiles.values()) {
+            serverOutZipStream.putNextEntry(value);
+            InputStream entryStream = serverJarFile.getInputStream(value);
+            byte[] bytes = JavaUtils.readAllBytes(entryStream);
+            entryStream.close();
+            serverOutZipStream.write(bytes);
+        }
+
+        serverOutZipStream.close();
+        serverOutFileStream.close();
+
+        clientJarFile.close();
+        serverJarFile.close();
+    }
+
+    public static void merge(
+            File clientIn,
+            File serverIn,
+            File mergedOut
+    ) throws IOException {
+        Map<String, ZipEntry> serverFiles = new HashMap<>();
+        Map<String, ZipEntry> clientFiles = new HashMap<>();
+
+        ZipFile clientJarFile = new ZipFile(clientIn);
+        ZipFile serverJarFile = new ZipFile(serverIn);
+
+        Enumeration<? extends ZipEntry> clientJarEntries = clientJarFile.entries();
+        Enumeration<? extends ZipEntry> serverJarEntries = serverJarFile.entries();
+
+        while (clientJarEntries.hasMoreElements()) {
+            ZipEntry entry = clientJarEntries.nextElement();
+            clientFiles.put(entry.getName(), entry);
+        }
+
+        while (serverJarEntries.hasMoreElements()) {
+            ZipEntry entry = serverJarEntries.nextElement();
+            if (clientFiles.containsKey(entry.getName())) continue;
+            serverFiles.put(entry.getName(), entry);
+        }
+
+        FileOutputStream mergedOutFileStream = new FileOutputStream(mergedOut);
+        ZipOutputStream mergedOutZipStream = new ZipOutputStream(mergedOutFileStream);
+
+        for (ZipEntry value : clientFiles.values()) {
+            mergedOutZipStream.putNextEntry(value);
+            InputStream entryStream = clientJarFile.getInputStream(value);
+            byte[] bytes = JavaUtils.readAllBytes(entryStream);
+            entryStream.close();
+            mergedOutZipStream.write(bytes);
+        }
+
+        for (ZipEntry value : serverFiles.values()) {
+            mergedOutZipStream.putNextEntry(value);
+            InputStream entryStream = serverJarFile.getInputStream(value);
+            byte[] bytes = JavaUtils.readAllBytes(entryStream);
+            entryStream.close();
+            mergedOutZipStream.write(bytes);
+        }
+
+        mergedOutZipStream.close();
+        mergedOutFileStream.close();
+
+        clientJarFile.close();
+        serverJarFile.close();
     }
 
 }

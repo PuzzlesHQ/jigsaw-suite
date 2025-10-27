@@ -1,16 +1,15 @@
 package dev.puzzleshq.jigsaw.cosmic;
 
-import dev.puzzleshq.jigsaw.game.JigsawGame;
-import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
-import dev.puzzleshq.jigsaw.util.ConfigurationUtil;
+import dev.puzzleshq.jigsaw.util.AbstractSplitGamePlugin;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.Dependency;
-import org.gradle.api.artifacts.dsl.DependencyHandler;
 import org.gradle.api.artifacts.dsl.RepositoryHandler;
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository;
 
-public class CosmicPlugin extends AbstractJigsawPlugin {
+public class CosmicPlugin extends AbstractSplitGamePlugin {
+
+    public CosmicPlugin() {
+        super("cosmicReach");
+    }
 
     @Override
     public void apply(Project target) {
@@ -35,65 +34,13 @@ public class CosmicPlugin extends AbstractJigsawPlugin {
                 content.includeModule("finalforeach", "cosmic-reach");
             });
         });
-
-        target.getConfigurations().register("cosmicReach").get();
     }
 
-    @Override
-    public void afterEvaluate(Project project) {
-        super.afterEvaluate(project);
-
-        Configuration clientImpl = ConfigurationUtil.getClientTransformConfiguration(project);
-        Configuration commonImpl = ConfigurationUtil.getCommonTransformConfiguration(project);
-        Configuration serverImpl = ConfigurationUtil.getServerTransformConfiguration(project);
-
-        DependencyHandler dependencyHandler = project.getDependencies();
-        project.getConfigurations().all(a -> { // I have to do this so it doesn't crash when it can't find it
-            if (a.getName().equals("cosmicReach")) {
-                for (Dependency puzzleLoader : project.getConfigurations().getByName("cosmicReach").getDependencies()) {
-                    if (JigsawGame.IS_MERGED) {
-                        assert commonImpl != null;
-                        dependencyHandler.add(commonImpl.getName(), puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":client");
-                        continue;
-                    }
-
-                    if (JigsawGame.IS_SPLIT) {
-                        assert clientImpl != null;
-                        dependencyHandler.add(clientImpl.getName(), puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":client");
-                        assert commonImpl != null;
-                        dependencyHandler.add(commonImpl.getName(), puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":server");
-                        assert serverImpl != null;
-                        dependencyHandler.add(serverImpl.getName(), puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":server");
-                        continue;
-                    }
-
-                    if (JigsawGame.IS_CLIENT_SPLIT) {
-                        assert clientImpl != null;
-                        dependencyHandler.add(clientImpl.getName(), puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":client");
-                        assert commonImpl != null;
-                        dependencyHandler.add(commonImpl.getName(), puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":client");
-                        continue;
-                    }
-
-                    if (JigsawGame.IS_SERVER_SPLIT) {
-                        assert serverImpl != null;
-                        dependencyHandler.add(serverImpl.getName(), puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":server");
-                        assert commonImpl != null;
-                        dependencyHandler.add(commonImpl.getName(), puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":server");
-                    }
-                }
-            }
-        });
-    }
 
     @Override
     public String getName() {
         return "Jigsaw Cosmic";
     }
 
-    @Override
-    public int getPriority() {
-        return 6;
-    }
 }
 
