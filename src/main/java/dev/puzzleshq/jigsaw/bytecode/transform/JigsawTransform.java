@@ -36,7 +36,7 @@ public class JigsawTransform extends AbstractJigsawPlugin {
         super.apply(target);
 
         if (jarCache == null) {
-            transformDir = new File(Plugins.jigsawDir, StringConstants.TRANSFORM_CONFIGURATION);
+            transformDir = new File(Plugins.jigsawDir, "transform");
             jarCache = new File(transformDir, "jar-cache");
             transformCache = new File(transformDir, "cache");
         }
