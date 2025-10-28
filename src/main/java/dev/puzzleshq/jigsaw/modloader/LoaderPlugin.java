@@ -38,7 +38,7 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
     public void apply(Project target) {
         super.apply(target);
 
-        target.getConfigurations().register(StringConstants.PUZZLE_LOADER).get();
+        target.getConfigurations().register(StringConstants.PUZZLE_LOADER_CONFIGURATION).get();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
 
         // I have to do this so it doesn't crash when it can't find it
         project.getConfigurations().all(a -> {
-            if (a.getName().equals(StringConstants.PUZZLE_LOADER)) {
+            if (a.getName().equals(StringConstants.PUZZLE_LOADER_CONFIGURATION)) {
                 /*
                     puzzleLoader("dev.puzzleshq:puzzle-loader-core:$version")
                     puzzleLoader("dev.puzzleshq:puzzle-loader-cosmic:$version")
@@ -56,27 +56,27 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
                     cosmicReach("dev.puzzleshq:puzzle-loader-cosmic:$version")
                  */
 
-                Configuration clientImpl = project.getConfigurations().register(StringConstants.PUZZLE_LOADER_CLIENT).get();
+                Configuration clientImpl = project.getConfigurations().register(StringConstants.PUZZLE_LOADER_CLIENT_CONFIGURATION).get();
                 Configuration clientConfig = ConfigurationUtil.getClientConfiguration(project);
                 if (clientConfig != null) clientConfig.extendsFrom(clientImpl);
 
-                Configuration commonImpl = project.getConfigurations().register(StringConstants.PUZZLE_LOADER_COMMON).get();
+                Configuration commonImpl = project.getConfigurations().register(StringConstants.PUZZLE_LOADER_COMMON_CONFIGURATION).get();
                 Configuration commonConfig = ConfigurationUtil.getCommonConfiguration(project);
                 if (commonConfig != null) commonConfig.extendsFrom(commonImpl);
 
-                Configuration serverImpl = project.getConfigurations().register(StringConstants.PUZZLE_LOADER_SERVER).get();
+                Configuration serverImpl = project.getConfigurations().register(StringConstants.PUZZLE_LOADER_SERVER_CONFIGURATION).get();
                 Configuration serverConfig = ConfigurationUtil.getServerConfiguration(project);
                 if (serverConfig != null) serverConfig.extendsFrom(serverImpl);
 
                 DependencyHandler dependencyHandler = project.getDependencies();
-                for (Dependency puzzleLoader : project.getConfigurations().getByName(StringConstants.PUZZLE_LOADER).getDependencies()) {
-                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_CLIENT, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.CLIENT_SIDE);
+                for (Dependency puzzleLoader : project.getConfigurations().getByName(StringConstants.PUZZLE_LOADER_CONFIGURATION).getDependencies()) {
+                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_CLIENT_CONFIGURATION, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.CLIENT_SIDE);
 
-                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_CLIENT, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.COMMON_SIDE);
-                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_COMMON, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.COMMON_SIDE);
-                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_SERVER, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.COMMON_SIDE);
+                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_CLIENT_CONFIGURATION, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.COMMON_SIDE);
+                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_COMMON_CONFIGURATION, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.COMMON_SIDE);
+                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_SERVER_CONFIGURATION, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.COMMON_SIDE);
 
-                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_SERVER, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.SERVER_SIDE);
+                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_SERVER_CONFIGURATION, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.SERVER_SIDE);
 
                     File manifestFile = new File(MANIFEST_LOCATIONS, puzzleLoader.getName() + "-version-manifest-refreshable.json");
                     byte[] manifestBytes = getOrDownload(manifestFile, "https://raw.githubusercontent.com/PuzzlesHQ/" + puzzleLoader.getName() + "/refs/heads/versioning/versions.json");
