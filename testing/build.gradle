@@ -14,9 +14,6 @@ plugins {
 
 //    id "jigsaw-puzzle-publishing"
 //    id "jigsaw-publishing"
-
-
-    id 'com.gradleup.shadow'
 }
 
 group = 'dev.puzzleshq'

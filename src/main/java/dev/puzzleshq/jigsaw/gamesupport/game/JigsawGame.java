@@ -31,13 +31,14 @@ public class JigsawGame extends AbstractJigsawPlugin {
     @Override
     public void apply(Project target) {
         super.apply(target);
-        Settings settings = GradleUtil.getGradleSettings(target);
-        ScriptHandler buildScript = settings.getBuildscript();
-        DependencyHandler handler = buildScript.getDependencies();
-        handler.add(StringConstants.CLASSPATH, StringConstants.SHADOW_GRADLE_PLUGIN);
+        GradleUtil.onSettingsEvaluate(target, settings -> {
+            ScriptHandler buildScript = settings.getBuildscript();
+            DependencyHandler handler = buildScript.getDependencies();
+            handler.add(StringConstants.CLASSPATH, StringConstants.SHADOW_GRADLE_PLUGIN);
 
-        PluginContainer plugins = target.getPlugins();
-        plugins.apply(StringConstants.SHADOW_GRADLE_PLUGIN_ID);
+            PluginContainer plugins = target.getPlugins();
+            plugins.apply(StringConstants.SHADOW_GRADLE_PLUGIN_ID);
+        });
 
         runDir = new File(target.getProjectDir(), "runs");
         runDir.mkdirs();
