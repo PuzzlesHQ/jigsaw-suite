@@ -1,6 +1,6 @@
 package dev.puzzleshq.jigsaw.sync;
 
-import dev.puzzleshq.jigsaw.util.AbstractJigsawExtension;
+import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawExtension;
 import org.gradle.api.Project;
 import org.gradle.api.model.ObjectFactory;
 

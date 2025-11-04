@@ -1,12 +1,12 @@
 package dev.puzzleshq.jigsaw.premade;
 
-import dev.puzzleshq.jigsaw.access.JigsawAccess;
-import dev.puzzleshq.jigsaw.cosmic.CosmicPlugin;
-import dev.puzzleshq.jigsaw.game.JigsawGame;
-import dev.puzzleshq.jigsaw.inject.JigsawInject;
+import dev.puzzleshq.jigsaw.bytecode.access.JigsawAccess;
+import dev.puzzleshq.jigsaw.bytecode.inject.JigsawInject;
+import dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform;
+import dev.puzzleshq.jigsaw.gamesupport.cosmic.CosmicPlugin;
+import dev.puzzleshq.jigsaw.gamesupport.game.JigsawGame;
 import dev.puzzleshq.jigsaw.modloader.LoaderPlugin;
 import dev.puzzleshq.jigsaw.sync.JigsawSync;
-import dev.puzzleshq.jigsaw.transform.JigsawTransform;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
