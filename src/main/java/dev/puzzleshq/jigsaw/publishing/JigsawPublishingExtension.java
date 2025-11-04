@@ -1,13 +1,13 @@
 package dev.puzzleshq.jigsaw.publishing;
 
+import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawExtension;
 import dev.puzzleshq.jigsaw.publishing.config.MavenDeveloper;
 import dev.puzzleshq.jigsaw.publishing.config.MavenLicense;
 import dev.puzzleshq.jigsaw.publishing.config.MavenRepo;
-import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawExtension;
 import org.gradle.api.Action;
+import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
 import org.gradle.api.model.ObjectFactory;
-import org.gradle.api.NamedDomainObjectContainer;
 
 import javax.inject.Inject;
 

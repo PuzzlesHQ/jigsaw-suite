@@ -1,10 +1,10 @@
 package dev.puzzleshq.jigsaw.publishing;
 
 import dev.puzzleshq.jigsaw.StringConstants;
+import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.publishing.config.MavenLicense;
 import dev.puzzleshq.jigsaw.publishing.config.MavenRepo;
 import dev.puzzleshq.jigsaw.publishing.tasks.DependenciesJson;
-import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.publish.PublishingExtension;

@@ -2,8 +2,6 @@ package dev.puzzleshq.jigsaw.gamesupport.cosmic;
 
 import dev.puzzleshq.jigsaw.abstracts.AbstractSplitGamePlugin;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.dsl.RepositoryHandler;
-import org.gradle.api.artifacts.repositories.IvyArtifactRepository;
 
 public class CosmicPlugin extends AbstractSplitGamePlugin {
 
@@ -15,8 +13,7 @@ public class CosmicPlugin extends AbstractSplitGamePlugin {
     public void apply(Project target) {
         super.apply(target);
 
-        RepositoryHandler handler = target.getRepositories();
-        IvyArtifactRepository cr_archive = handler.ivy(repo -> { // The CR repo
+        target.getRepositories().ivy(repo -> { // The CR repo
             repo.setName("CRArchive");
             repo.setUrl("https://github.com/PuzzlesHQ/CRArchive/releases/download");
 

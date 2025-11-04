@@ -1,9 +1,9 @@
 package dev.puzzleshq.jigsaw.bytecode.transform.tasks;
 
+import dev.puzzleshq.jigsaw.bytecode.transform.JarTransformer;
 import dev.puzzleshq.jigsaw.bytecode.transform.JigsawFileArtifact;
 import dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform;
 import dev.puzzleshq.jigsaw.util.FileUtil;
-import dev.puzzleshq.jigsaw.bytecode.transform.JarTransformer;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.artifacts.*;
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier;

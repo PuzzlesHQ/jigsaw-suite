@@ -2,11 +2,14 @@ package dev.puzzleshq.jigsaw.abstracts;
 
 import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.StringConstants;
+import dev.puzzleshq.jigsaw.bytecode.transform.JarTransformer;
 import dev.puzzleshq.jigsaw.gamesupport.game.JigsawGame;
 import dev.puzzleshq.jigsaw.util.ConfigurationUtil;
-import dev.puzzleshq.jigsaw.bytecode.transform.JarTransformer;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.*;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.artifacts.ResolvedArtifact;
+import org.gradle.api.artifacts.ResolvedConfiguration;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
 
 import java.io.File;

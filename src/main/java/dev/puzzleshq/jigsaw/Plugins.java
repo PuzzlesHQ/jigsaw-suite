@@ -1,8 +1,8 @@
 package dev.puzzleshq.jigsaw;
 
+import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.bytecode.access.JigsawAccess;
 import dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform;
-import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.PluginContainer;
 
