@@ -55,7 +55,7 @@ public class JigsawTransform extends AbstractJigsawPlugin {
                 configurationMap.put(StringConstants.RUNTIME_ONLY_CONFIGURATION, runtime);
                 return;
             }
-            Configuration impl = configurations.register(sourceSet.getName() + StringConstants.TRANSFORM_CONFIGURATION).get();
+            Configuration impl = configurations.register(sourceSet.getName() + "Transform").get();
             configurationMap.put(sourceSet.getName() + "Implementation", impl);
             Configuration compile = configurations.register(sourceSet.getName() + "CompileOnlyTransform").get();
             configurationMap.put(sourceSet.getName() + "CompileOnly", compile);
