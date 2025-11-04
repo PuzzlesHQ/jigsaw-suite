@@ -1,5 +1,7 @@
 package dev.puzzleshq.jigsaw;
 
+import org.gradle.api.Plugin;
+
 public class StringConstants {
 
     public static final String PUZZLE_MOD_JSON = "puzzle.mod.json";
@@ -58,6 +60,9 @@ public class StringConstants {
     public static final String CLIENT_BUNDLE_CONFIGURATION = "clientBundle";
     public static final String COMMON_BUNDLE_CONFIGURATION = "commonBundle";
     public static final String SERVER_BUNDLE_CONFIGURATION = "serverBundle";
+    public static final String CLASSPATH = "classpath";
+    public static final String SHADOW_GRADLE_PLUGIN = "com.gradleup.shadow:shadow-gradle-plugin:8.3.8";
+    public static final String SHADOW_GRADLE_PLUGIN_ID = "com.gradleup.shadow";
 
     // quick constants gen
     public static void main(String[] args) {
