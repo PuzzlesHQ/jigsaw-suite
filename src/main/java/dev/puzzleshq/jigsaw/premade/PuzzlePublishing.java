@@ -1,10 +1,10 @@
 package dev.puzzleshq.jigsaw.premade;
 
+import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawExtension;
+import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.publishing.JigsawPublishingExtension;
 import dev.puzzleshq.jigsaw.publishing.Publishing;
 import dev.puzzleshq.jigsaw.publishing.config.MavenLicense;
-import dev.puzzleshq.jigsaw.util.AbstractJigsawExtension;
-import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
 import org.gradle.api.Action;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;

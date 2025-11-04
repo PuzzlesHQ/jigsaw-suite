@@ -1,11 +1,10 @@
 package dev.puzzleshq.jigsaw.modloader;
 
 import dev.puzzleshq.jigsaw.Plugins;
-import dev.puzzleshq.jigsaw.game.JigsawGame;
-import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
+import dev.puzzleshq.jigsaw.StringConstants;
+import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.util.ConfigurationUtil;
 import dev.puzzleshq.jigsaw.util.JavaUtils;
-import org.apache.groovy.json.internal.IO;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
@@ -20,7 +19,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
 public class LoaderPlugin extends AbstractJigsawPlugin {
@@ -40,7 +38,7 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
     public void apply(Project target) {
         super.apply(target);
 
-        target.getConfigurations().register("puzzleLoader").get();
+        target.getConfigurations().register(StringConstants.PUZZLE_LOADER_CONFIGURATION).get();
     }
 
     @Override
@@ -49,7 +47,7 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
 
         // I have to do this so it doesn't crash when it can't find it
         project.getConfigurations().all(a -> {
-            if (a.getName().equals("puzzleLoader")) {
+            if (a.getName().equals(StringConstants.PUZZLE_LOADER_CONFIGURATION)) {
                 /*
                     puzzleLoader("dev.puzzleshq:puzzle-loader-core:$version")
                     puzzleLoader("dev.puzzleshq:puzzle-loader-cosmic:$version")
@@ -58,27 +56,27 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
                     cosmicReach("dev.puzzleshq:puzzle-loader-cosmic:$version")
                  */
 
-                Configuration clientImpl = project.getConfigurations().register("puzzleLoaderClient").get();
+                Configuration clientImpl = project.getConfigurations().register(StringConstants.PUZZLE_LOADER_CLIENT_CONFIGURATION).get();
                 Configuration clientConfig = ConfigurationUtil.getClientConfiguration(project);
                 if (clientConfig != null) clientConfig.extendsFrom(clientImpl);
 
-                Configuration commonImpl = project.getConfigurations().register("puzzleLoaderCommon").get();
+                Configuration commonImpl = project.getConfigurations().register(StringConstants.PUZZLE_LOADER_COMMON_CONFIGURATION).get();
                 Configuration commonConfig = ConfigurationUtil.getCommonConfiguration(project);
                 if (commonConfig != null) commonConfig.extendsFrom(commonImpl);
 
-                Configuration serverImpl = project.getConfigurations().register("puzzleLoaderServer").get();
+                Configuration serverImpl = project.getConfigurations().register(StringConstants.PUZZLE_LOADER_SERVER_CONFIGURATION).get();
                 Configuration serverConfig = ConfigurationUtil.getServerConfiguration(project);
                 if (serverConfig != null) serverConfig.extendsFrom(serverImpl);
 
                 DependencyHandler dependencyHandler = project.getDependencies();
-                for (Dependency puzzleLoader : project.getConfigurations().getByName("puzzleLoader").getDependencies()) {
-                    dependencyHandler.add("puzzleLoaderClient", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":client");
+                for (Dependency puzzleLoader : project.getConfigurations().getByName(StringConstants.PUZZLE_LOADER_CONFIGURATION).getDependencies()) {
+                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_CLIENT_CONFIGURATION, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.CLIENT_SIDE);
 
-                    dependencyHandler.add("puzzleLoaderClient", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":common");
-                    dependencyHandler.add("puzzleLoaderCommon", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":common");
-                    dependencyHandler.add("puzzleLoaderServer", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":common");
+                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_CLIENT_CONFIGURATION, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.COMMON_SIDE);
+                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_COMMON_CONFIGURATION, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.COMMON_SIDE);
+                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_SERVER_CONFIGURATION, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.COMMON_SIDE);
 
-                    dependencyHandler.add("puzzleLoaderServer", puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":server");
+                    dependencyHandler.add(StringConstants.PUZZLE_LOADER_SERVER_CONFIGURATION, puzzleLoader.getGroup() + ":" + puzzleLoader.getName() + ":" + puzzleLoader.getVersion() + ":" + StringConstants.SERVER_SIDE);
 
                     File manifestFile = new File(MANIFEST_LOCATIONS, puzzleLoader.getName() + "-version-manifest-refreshable.json");
                     byte[] manifestBytes = getOrDownload(manifestFile, "https://raw.githubusercontent.com/PuzzlesHQ/" + puzzleLoader.getName() + "/refs/heads/versioning/versions.json");
@@ -114,7 +112,7 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
 
     private void processDependenciesObject(Project project, Configuration clientConfig, Configuration commonConfig, Configuration serverConfig, JsonObject dependenciesObject) {
         BiConsumer<String, String> check = (side, configuration) -> {
-            JsonArray commonArray = dependenciesObject.get("common").asArray();
+            JsonArray commonArray = dependenciesObject.get(StringConstants.COMMON_SIDE).asArray();
 
             for (JsonValue value : commonArray) {
                 JsonObject object = value.asObject();
@@ -124,7 +122,7 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
                 String version = object.get("version").asString();
                 String type = object.get("type").asString();
 
-                if (type.equals("compileOnly")) continue;
+                if (type.equals(StringConstants.COMPILE_ONLY_CONFIGURATION)) continue;
 
                 String artifact = groupId + ":" + artifactId + ":" + version;
 
@@ -151,14 +149,14 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
         }
 
         if (clientConfig != null) {
-            check.accept("client", clientConfig.getName());
-            check.accept("common", clientConfig.getName());
+            check.accept(StringConstants.CLIENT_SIDE, clientConfig.getName());
+            check.accept(StringConstants.COMMON_SIDE, clientConfig.getName());
         }
         if (commonConfig != null)
-            check.accept("common", commonConfig.getName());
+            check.accept(StringConstants.COMMON_SIDE, commonConfig.getName());
         if (serverConfig != null) {
-            check.accept("server", serverConfig.getName());
-            check.accept("common", serverConfig.getName());
+            check.accept(StringConstants.SERVER_SIDE, serverConfig.getName());
+            check.accept(StringConstants.COMMON_SIDE, serverConfig.getName());
         }
     }
 

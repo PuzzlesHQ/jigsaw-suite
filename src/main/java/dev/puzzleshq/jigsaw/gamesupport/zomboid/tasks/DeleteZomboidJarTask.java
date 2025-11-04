@@ -1,13 +1,13 @@
-package dev.puzzleshq.jigsaw.modloader.tasks;
+package dev.puzzleshq.jigsaw.gamesupport.zomboid.tasks;
 
 import dev.puzzleshq.jigsaw.gamesupport.zomboid.ZomboidPlugin;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
-public class RefreshPuzzleManifests extends DefaultTask {
+public class DeleteZomboidJarTask extends DefaultTask {
 
-    public RefreshPuzzleManifests() {
-        setGroup("jigsaw");
+    public DeleteZomboidJarTask() {
+        setGroup("zomboid");
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")

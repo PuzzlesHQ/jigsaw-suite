@@ -1,7 +1,7 @@
 package dev.puzzleshq.jigsaw.sync;
 
 import dev.puzzleshq.jigsaw.Plugins;
-import dev.puzzleshq.jigsaw.util.AbstractJigsawPlugin;
+import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import org.gradle.api.Project;
 
 import java.util.ArrayList;

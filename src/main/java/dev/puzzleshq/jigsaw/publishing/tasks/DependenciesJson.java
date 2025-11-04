@@ -1,7 +1,7 @@
 package dev.puzzleshq.jigsaw.publishing.tasks;
 
+import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.publishing.Publishing;
-import dev.puzzleshq.jigsaw.util.ConfigurationUtil;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
@@ -34,38 +34,22 @@ public class DependenciesJson extends DefaultTask {
 
         JsonObject object = new JsonObject();
 
-//        Configuration clientTransform = ConfigurationUtil.getClientTransformConfiguration(getProject());
-//        Configuration commonTransform = ConfigurationUtil.getCommonTransformConfiguration(getProject());
-//        Configuration serverTransform = ConfigurationUtil.getServerTransformConfiguration(getProject());
-
-//        Configuration clientImpl = ConfigurationUtil.getClientConfiguration(getProject());
-//        Configuration commonImpl = ConfigurationUtil.getCommonConfiguration(getProject());
-//        Configuration serverImpl = ConfigurationUtil.getServerConfiguration(getProject());
-
-//        add(getProject(), "client", object, clientTransform, clientTransform.getName());
-//        add(getProject(), "common", object, commonTransform, commonTransform.getName());
-//        add(getProject(), "server", object, serverTransform, serverTransform.getName());
-
-//        add(getProject(), "client", object, clientImpl, clientTransform.getName());
-//        add(getProject(), "common", object, commonImpl, commonTransform.getName());
-//        add(getProject(), "server", object, serverImpl, serverTransform.getName());
-
         getProject().getConfigurations().all(configuration -> {
             switch (configuration.getName()) {
                 case "includedDependency": {
-                    add(getProject(), "merged", object, getProject().getConfigurations().getByName("includedDependency"), "implementation");
+                    add(getProject(), "merged", object, getProject().getConfigurations().getByName("includedDependency"), StringConstants.IMPLEMENTATION_CONFIGURATION);
                     break;
                 }
                 case "clientIncludedDependency": {
-                    add(getProject(), "client", object, getProject().getConfigurations().getByName("clientIncludedDependency"), "implementation");
+                    add(getProject(), StringConstants.CLIENT_SIDE, object, getProject().getConfigurations().getByName("clientIncludedDependency"), StringConstants.IMPLEMENTATION_CONFIGURATION);
                     break;
                 }
                 case "serverIncludedDependency": {
-                    add(getProject(), "server", object, getProject().getConfigurations().getByName("serverIncludedDependency"), "implementation");
+                    add(getProject(), StringConstants.SERVER_SIDE, object, getProject().getConfigurations().getByName("serverIncludedDependency"), StringConstants.IMPLEMENTATION_CONFIGURATION);
                     break;
                 }
                 case "commonIncludedDependency": {
-                    add(getProject(), "common", object, getProject().getConfigurations().getByName("commonIncludedDependency"), "implementation");
+                    add(getProject(), StringConstants.COMMON_SIDE, object, getProject().getConfigurations().getByName("commonIncludedDependency"), StringConstants.IMPLEMENTATION_CONFIGURATION);
                     break;
                 }
             }
