@@ -157,8 +157,10 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin {
         if (JigsawGame.IS_SPLIT) {
             assert clientImpl != null;
             dependencyHandler.add(clientImpl.getName(), clientNotation.get());
+            dependencyHandler.add(clientImpl.getName(), commonNotation.get());
             assert serverImpl != null;
             dependencyHandler.add(serverImpl.getName(), serverNotation.get());
+            dependencyHandler.add(serverImpl.getName(), commonNotation.get());
             assert commonImpl != null;
             dependencyHandler.add(commonImpl.getName(), commonNotation.get());
             return;
@@ -167,6 +169,7 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin {
         if (JigsawGame.IS_SERVER_SPLIT) {
             assert serverImpl != null;
             dependencyHandler.add(serverImpl.getName(), serverNotation.get());
+            dependencyHandler.add(serverImpl.getName(), commonNotation.get());
             assert commonImpl != null;
             dependencyHandler.add(commonImpl.getName(), commonNotation.get());
         }
@@ -174,6 +177,7 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin {
         if (JigsawGame.IS_CLIENT_SPLIT) {
             assert clientImpl != null;
             dependencyHandler.add(clientImpl.getName(), clientNotation.get());
+            dependencyHandler.add(clientImpl.getName(), commonNotation.get());
             assert commonImpl != null;
             dependencyHandler.add(commonImpl.getName(), commonNotation.get());
             return;
