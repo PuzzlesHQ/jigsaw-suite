@@ -5,17 +5,26 @@ import dev.puzzleshq.accesswriter.api.IWriterFormat;
 import dev.puzzleshq.accesswriter.file.ManipulationFile;
 import dev.puzzleshq.accesswriter.transformers.AccessTransformerASM;
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
+import dev.puzzleshq.jigsaw.abstracts.IHashablePlugin;
+import dev.puzzleshq.jigsaw.bytecode.transform.JarTransformer;
+import dev.puzzleshq.jigsaw.bytecode.transform.JigsawFileArtifact;
 import dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform;
+import dev.puzzleshq.jigsaw.util.FileUtil;
 import dev.puzzleshq.jigsaw.util.JavaUtils;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.*;
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
+import org.gradle.api.artifacts.result.ResolvedArtifactResult;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.ExtensionContainer;
+import org.gradle.internal.component.external.model.ModuleComponentArtifactIdentifier;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.*;
 
-public class JigsawAccess extends AbstractJigsawPlugin {
+public class JigsawAccess extends AbstractJigsawPlugin implements IHashablePlugin {
 
     public AccessExtension accessExtension;
 
@@ -90,5 +99,15 @@ public class JigsawAccess extends AbstractJigsawPlugin {
     @Override
     public int getPriority() {
         return 1;
+    }
+
+    @Override
+    public File[] getFilesToHash() {
+        return this.accessExtension.manipulators.get().getFiles().toArray(new File[0]);
+    }
+
+    @Override
+    public void triggerChange(Project project) {
+        JigsawTransform.autoTransform(project);
     }
 }

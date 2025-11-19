@@ -6,6 +6,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
@@ -138,8 +139,15 @@ public class JarTransformer {
             }
         }
 
+        serverFiles.remove("META-INF/MANIFEST.MF");
+        clientFiles.remove("META-INF/MANIFEST.MF");
+        commonFiles.remove("META-INF/MANIFEST.MF");
+
         FileOutputStream clientOutFileStream = new FileOutputStream(clientOut);
         ZipOutputStream clientOutZipStream = new ZipOutputStream(clientOutFileStream);
+
+        clientOutZipStream.putNextEntry(new ZipEntry("META-INF/MANIFEST.MF"));
+        clientOutZipStream.write("Manifest-Version: 1.0".getBytes(StandardCharsets.UTF_8));
 
         for (ZipEntry value : clientFiles.values()) {
             clientOutZipStream.putNextEntry(value);
@@ -155,6 +163,9 @@ public class JarTransformer {
         FileOutputStream commonOutFileStream = new FileOutputStream(commonOut);
         ZipOutputStream commonOutZipStream = new ZipOutputStream(commonOutFileStream);
 
+        commonOutZipStream.putNextEntry(new ZipEntry("META-INF/MANIFEST.MF"));
+        commonOutZipStream.write("Manifest-Version: 1.0".getBytes(StandardCharsets.UTF_8));
+
         for (ZipEntry value : commonFiles.values()) {
             commonOutZipStream.putNextEntry(value);
             InputStream entryStream = clientJarFile.getInputStream(value);
@@ -168,6 +179,9 @@ public class JarTransformer {
 
         FileOutputStream serverOutFileStream = new FileOutputStream(serverOut);
         ZipOutputStream serverOutZipStream = new ZipOutputStream(serverOutFileStream);
+
+        serverOutZipStream.putNextEntry(new ZipEntry("META-INF/MANIFEST.MF"));
+        serverOutZipStream.write("Manifest-Version: 1.0".getBytes(StandardCharsets.UTF_8));
 
         for (ZipEntry value : serverFiles.values()) {
             serverOutZipStream.putNextEntry(value);
@@ -209,8 +223,14 @@ public class JarTransformer {
             serverFiles.put(entry.getName(), entry);
         }
 
+        serverFiles.remove("META-INF/MANIFEST.MF");
+        clientFiles.remove("META-INF/MANIFEST.MF");
+
         FileOutputStream mergedOutFileStream = new FileOutputStream(mergedOut);
         ZipOutputStream mergedOutZipStream = new ZipOutputStream(mergedOutFileStream);
+
+        mergedOutZipStream.putNextEntry(new ZipEntry("META-INF/MANIFEST.MF"));
+        mergedOutZipStream.write("Manifest-Version: 1.0".getBytes(StandardCharsets.UTF_8));
 
         for (ZipEntry value : clientFiles.values()) {
             mergedOutZipStream.putNextEntry(value);

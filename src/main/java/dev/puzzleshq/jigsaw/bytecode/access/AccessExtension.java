@@ -1,6 +1,7 @@
 package dev.puzzleshq.jigsaw.bytecode.access;
 
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawExtension;
+import dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform;
 import org.gradle.api.Project;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.FileCollection;
@@ -11,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class AccessExtension extends AbstractJigsawExtension {
 
-    final AtomicReference<FileCollection> manipulators;
+    public final AtomicReference<FileCollection> manipulators;
 
     public AccessExtension(Project project, ObjectFactory objectFactory) {
         super(project, objectFactory);
