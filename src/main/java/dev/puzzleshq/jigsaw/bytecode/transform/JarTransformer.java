@@ -84,10 +84,10 @@ public class JarTransformer {
                     classReader.accept(last, 0);
 
                     byte[] newBytes = writer.toByteArray();
-                    zipOutputStream.putNextEntry(entry);
+                    zipOutputStream.putNextEntry(new ZipEntry(entry.getName()));
                     zipOutputStream.write(newBytes);
                 } else {
-                    zipOutputStream.putNextEntry(entry);
+                    zipOutputStream.putNextEntry(new ZipEntry(entry.getName()));
                     zipOutputStream.write(entryBytes);
                 }
             }
