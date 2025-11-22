@@ -150,7 +150,7 @@ public class JarTransformer {
         clientOutZipStream.write("Manifest-Version: 1.0".getBytes(StandardCharsets.UTF_8));
 
         for (ZipEntry value : clientFiles.values()) {
-            clientOutZipStream.putNextEntry(value);
+            clientOutZipStream.putNextEntry(new ZipEntry(value.getName()));
             InputStream entryStream = clientJarFile.getInputStream(value);
             byte[] bytes = JavaUtils.readAllBytes(entryStream);
             entryStream.close();
@@ -167,7 +167,7 @@ public class JarTransformer {
         commonOutZipStream.write("Manifest-Version: 1.0".getBytes(StandardCharsets.UTF_8));
 
         for (ZipEntry value : commonFiles.values()) {
-            commonOutZipStream.putNextEntry(value);
+            commonOutZipStream.putNextEntry(new ZipEntry(value.getName()));
             InputStream entryStream = clientJarFile.getInputStream(value);
             byte[] bytes = JavaUtils.readAllBytes(entryStream);
             entryStream.close();
@@ -184,7 +184,7 @@ public class JarTransformer {
         serverOutZipStream.write("Manifest-Version: 1.0".getBytes(StandardCharsets.UTF_8));
 
         for (ZipEntry value : serverFiles.values()) {
-            serverOutZipStream.putNextEntry(value);
+            serverOutZipStream.putNextEntry(new ZipEntry(value.getName()));
             InputStream entryStream = serverJarFile.getInputStream(value);
             byte[] bytes = JavaUtils.readAllBytes(entryStream);
             entryStream.close();
@@ -233,7 +233,7 @@ public class JarTransformer {
         mergedOutZipStream.write("Manifest-Version: 1.0".getBytes(StandardCharsets.UTF_8));
 
         for (ZipEntry value : clientFiles.values()) {
-            mergedOutZipStream.putNextEntry(value);
+            mergedOutZipStream.putNextEntry(new ZipEntry(value.getName()));
             InputStream entryStream = clientJarFile.getInputStream(value);
             byte[] bytes = JavaUtils.readAllBytes(entryStream);
             entryStream.close();
@@ -241,7 +241,7 @@ public class JarTransformer {
         }
 
         for (ZipEntry value : serverFiles.values()) {
-            mergedOutZipStream.putNextEntry(value);
+            mergedOutZipStream.putNextEntry(new ZipEntry(value.getName()));
             InputStream entryStream = serverJarFile.getInputStream(value);
             byte[] bytes = JavaUtils.readAllBytes(entryStream);
             entryStream.close();
