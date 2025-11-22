@@ -2,6 +2,7 @@ package dev.puzzleshq.jigsaw.bytecode.inject;
 
 import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
+import dev.puzzleshq.jigsaw.abstracts.IHashablePlugin;
 import dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform;
 import dev.puzzleshq.jigsaw.util.JavaUtils;
 import org.gradle.api.Project;
@@ -9,11 +10,12 @@ import org.gradle.api.plugins.ExtensionContainer;
 import org.hjson.JsonObject;
 import org.hjson.JsonValue;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Objects;
+import java.util.*;
 
-public class JigsawInject extends AbstractJigsawPlugin {
+public class JigsawInject extends AbstractJigsawPlugin implements IHashablePlugin {
 
     @Override
     public String getName() {
@@ -26,6 +28,7 @@ public class JigsawInject extends AbstractJigsawPlugin {
     }
 
     InjectionExtension injectionExtension;
+    static Set<File> files = new HashSet<>();
 
     @Override
     public void apply(Project target) {
@@ -68,4 +71,15 @@ public class JigsawInject extends AbstractJigsawPlugin {
             }
         }
     }
+
+    @Override
+    public File[] getFilesToHash() {
+        return files.toArray(new File[0]);
+    }
+
+    @Override
+    public void triggerChange(Project project) {
+        JigsawTransform.autoTransform(project);
+    }
+
 }

@@ -3,6 +3,7 @@ package dev.puzzleshq.jigsaw.bytecode.transform;
 import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
+import dev.puzzleshq.jigsaw.util.FileUtil;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.*;
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
@@ -30,6 +31,68 @@ public class JigsawTransform extends AbstractJigsawPlugin {
     public static File jarCache;
     public static File transformCache;
     public static File transformDir;
+
+    public static void autoTransform(Project project) {
+        FileUtil.delete(JigsawTransform.transformCache);
+
+        for (Map.Entry<String, Configuration> stringConfigurationEntry : JigsawTransform.configurationMap.entrySet()) {
+            Configuration configuration = stringConfigurationEntry.getValue();
+            DependencySet dependencies = configuration.getAllDependencies();
+            if (dependencies.isEmpty()) continue;
+
+            Queue<JigsawFileArtifact> toBeTransformed = new ArrayDeque<>();
+
+            ResolvedConfiguration resolvedConfiguration = configuration.getResolvedConfiguration();
+            Set<ResolvedArtifact> resolvedArtifacts = resolvedConfiguration.getResolvedArtifacts();
+
+            for (ResolvedArtifactResult artifact : configuration.getIncoming().getArtifacts()) {
+                if (artifact.getId() instanceof ModuleComponentArtifactIdentifier) continue;
+
+                toBeTransformed.add(new JigsawFileArtifact(
+                        artifact.getFile(),
+                        stringConfigurationEntry.getKey(),
+                        artifact.getId().toString(),
+                        true
+                ));
+            }
+            for (ResolvedArtifact resolvedArtifact : resolvedArtifacts) {
+                if (resolvedArtifact.getId().getComponentIdentifier() instanceof ModuleComponentIdentifier) {
+                    ModuleComponentIdentifier identifier = (ModuleComponentIdentifier) resolvedArtifact.getId().getComponentIdentifier();
+                    String group = identifier.getGroup();
+                    String artifact = identifier.getModule();
+                    String version = identifier.getVersion();
+                    String classifier = resolvedArtifact.getClassifier();
+                    String extension = resolvedArtifact.getExtension();
+
+                    String notation = group + ":" + artifact + ":" + version + ":" + classifier + "@" + extension;
+
+                    toBeTransformed.add(new JigsawFileArtifact(
+                            resolvedArtifact.getFile(),
+                            stringConfigurationEntry.getKey(),
+                            notation,
+                            false
+                    ));
+                }
+            }
+
+            while (!toBeTransformed.isEmpty()) {
+                JigsawFileArtifact artifact = toBeTransformed.remove();
+                File transformedFile = new File(JigsawTransform.transformCache, artifact.getLocalPath());
+                transformedFile.getParentFile().mkdirs();
+                if (transformedFile.exists())
+                    transformedFile.delete();
+
+                ((ExternalModuleDependency) Objects.requireNonNull(project.getDependencies()
+                        .add(artifact.getConfiguration(), artifact.getTransformedNotation()))).setChanging(true);
+                JarTransformer.process(
+                        artifact.getRegularFile(),
+                        JigsawTransform.PLUGIN_CLASS_PREPROCESSOR_MAP.values(),
+                        JigsawTransform.PLUGIN_RESOURCE_PREPROCESSOR_MAP.values()
+                );
+                JarTransformer.transform(artifact.getRegularFile(), transformedFile, JigsawTransform.PLUGIN_TRANSFORMER_MAP.values());
+            }
+        }
+    }
 
     @Override
     public void apply(@NotNull Project target) {

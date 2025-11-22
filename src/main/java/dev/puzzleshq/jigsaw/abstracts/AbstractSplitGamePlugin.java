@@ -59,9 +59,9 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin {
     public void afterEvaluate(Project project) {
         super.afterEvaluate(project);
 
-        Configuration clientImpl = ConfigurationUtil.getClientTransformConfiguration(project);
-        Configuration commonImpl = ConfigurationUtil.getCommonTransformConfiguration(project);
-        Configuration serverImpl = ConfigurationUtil.getServerTransformConfiguration(project);
+        Configuration clientRuntime = ConfigurationUtil.getClientTransformConfiguration(project);
+        Configuration commonRuntime = ConfigurationUtil.getCommonTransformConfiguration(project);
+        Configuration serverRuntime = ConfigurationUtil.getServerTransformConfiguration(project);
 
         AtomicReference<File> clientIn = new AtomicReference<>();
         AtomicReference<File> serverIn = new AtomicReference<>();
@@ -140,7 +140,6 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin {
 
                     dependencyHandler.add(configurationNameInternal, dependencyName + ":" + StringConstants.CLIENT_SIDE);
                     dependencyHandler.add(configurationNameInternal, dependencyName + ":" + StringConstants.SERVER_SIDE);
-
                 }
             }
         });
@@ -155,37 +154,37 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin {
         }
 
         if (JigsawGame.IS_SPLIT) {
-            assert clientImpl != null;
-            dependencyHandler.add(clientImpl.getName(), clientNotation.get());
-            dependencyHandler.add(clientImpl.getName(), commonNotation.get());
-            assert serverImpl != null;
-            dependencyHandler.add(serverImpl.getName(), serverNotation.get());
-            dependencyHandler.add(serverImpl.getName(), commonNotation.get());
-            assert commonImpl != null;
-            dependencyHandler.add(commonImpl.getName(), commonNotation.get());
+            assert clientRuntime != null;
+            dependencyHandler.add(clientRuntime.getName(), clientNotation.get());
+            dependencyHandler.add(clientRuntime.getName(), commonNotation.get());
+            assert serverRuntime != null;
+            dependencyHandler.add(serverRuntime.getName(), serverNotation.get());
+            dependencyHandler.add(serverRuntime.getName(), commonNotation.get());
+            assert commonRuntime != null;
+            dependencyHandler.add(commonRuntime.getName(), commonNotation.get());
             return;
         }
 
         if (JigsawGame.IS_SERVER_SPLIT) {
-            assert serverImpl != null;
-            dependencyHandler.add(serverImpl.getName(), serverNotation.get());
-            dependencyHandler.add(serverImpl.getName(), commonNotation.get());
-            assert commonImpl != null;
-            dependencyHandler.add(commonImpl.getName(), commonNotation.get());
+            assert serverRuntime != null;
+            dependencyHandler.add(serverRuntime.getName(), serverNotation.get());
+            dependencyHandler.add(serverRuntime.getName(), commonNotation.get());
+            assert commonRuntime != null;
+            dependencyHandler.add(commonRuntime.getName(), commonNotation.get());
         }
 
         if (JigsawGame.IS_CLIENT_SPLIT) {
-            assert clientImpl != null;
-            dependencyHandler.add(clientImpl.getName(), clientNotation.get());
-            dependencyHandler.add(clientImpl.getName(), commonNotation.get());
-            assert commonImpl != null;
-            dependencyHandler.add(commonImpl.getName(), commonNotation.get());
+            assert clientRuntime != null;
+            dependencyHandler.add(clientRuntime.getName(), clientNotation.get());
+            dependencyHandler.add(clientRuntime.getName(), commonNotation.get());
+            assert commonRuntime != null;
+            dependencyHandler.add(commonRuntime.getName(), commonNotation.get());
             return;
         }
 
         if (JigsawGame.IS_MERGED) {
-            assert commonImpl != null;
-            dependencyHandler.add(commonImpl.getName(), mergedNotation.get());
+            assert commonRuntime != null;
+            dependencyHandler.add(commonRuntime.getName(), mergedNotation.get());
             return;
         }
     }

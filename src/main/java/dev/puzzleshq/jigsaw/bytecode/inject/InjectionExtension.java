@@ -16,6 +16,7 @@ public class InjectionExtension extends AbstractJigsawExtension {
 
     public void setModJson(File file) {
         modJson = file;
+        JigsawInject.files.add(file);
     }
 
 }
