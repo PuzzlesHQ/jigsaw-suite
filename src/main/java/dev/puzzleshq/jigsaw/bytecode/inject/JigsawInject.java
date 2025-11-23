@@ -1,5 +1,6 @@
 package dev.puzzleshq.jigsaw.bytecode.inject;
 
+import com.sun.glass.ui.Clipboard;
 import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.abstracts.IHashablePlugin;
@@ -13,9 +14,12 @@ import org.hjson.JsonValue;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
 
 public class JigsawInject extends AbstractJigsawPlugin implements IHashablePlugin {
+
+    public static List<File> files = new ArrayList<>();
 
     @Override
     public String getName() {
@@ -28,7 +32,6 @@ public class JigsawInject extends AbstractJigsawPlugin implements IHashablePlugi
     }
 
     InjectionExtension injectionExtension;
-    static Set<File> files = new HashSet<>();
 
     @Override
     public void apply(Project target) {
@@ -36,15 +39,16 @@ public class JigsawInject extends AbstractJigsawPlugin implements IHashablePlugi
 
         ExtensionContainer extensionContainer = target.getExtensions();
         injectionExtension = extensionContainer.create("jigsawInject", InjectionExtension.class, target, target.getObjects());
+        this.injectionExtension.resetInterfaceInjectors();
 
         JigsawTransform.PLUGIN_RESOURCE_PREPROCESSOR_MAP.put(
                 getName(),
-                (resourceName, bytes) -> {
+                (resourceName, bytes, resourceMap) -> {
                     if (!Objects.equals(resourceName, StringConstants.PUZZLE_MOD_JSON)) return;
 
                     String str = new String(bytes);
                     JsonObject object = JsonValue.readHjson(str).asObject();
-                    InterfaceInjector.search(object);
+                    InterfaceInjector.search(object, resourceMap);
                 }
         );
 
@@ -64,8 +68,19 @@ public class JigsawInject extends AbstractJigsawPlugin implements IHashablePlugi
                 FileInputStream stream = new FileInputStream(injectionExtension.modJson);
                 String str = new String(JavaUtils.readAllBytes(stream));
                 JsonObject object = JsonValue.readHjson(str).asObject();
-                InterfaceInjector.search(object);
+                InterfaceInjector.searchForLoomInjectorEntries(object);
                 stream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        for (File file : this.injectionExtension.injectionFiles.get()) {
+            if (file == null) continue;
+
+            try {
+                byte[] bytes = Files.readAllBytes(file.getAbsoluteFile().toPath());
+                InterfaceInjector.addInjectFile(new String(bytes));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -74,7 +89,9 @@ public class JigsawInject extends AbstractJigsawPlugin implements IHashablePlugi
 
     @Override
     public File[] getFilesToHash() {
-        return files.toArray(new File[0]);
+        List<File> strings = new ArrayList<>(this.injectionExtension.injectionFiles.get().getFiles());
+        strings.addAll(files);
+        return strings.toArray(new File[0]);
     }
 
     @Override

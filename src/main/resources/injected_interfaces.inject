@@ -1,5 +1,13 @@
 # Blah, Blah, Blah
-path/to/Class0 <- [ *This is a comment* path/to/Interface0, path/to/Interface1 ]
+[path/to/Class0, path/to/Class2] <- [ *This is a comment* path/to/Interface0, path/to/Interface1 ]
 path/to/Class1 <- [ *This is a comment* path/to/Interface2, path/to/Interface3 ]
-path/to/Class2 <- [ *This is a comment* path/to/Interface4, path/to/Interface5 ]
-path/to/Class3 <- [ *This is a comment* path/to/Interface5, path/to/Interface7 ]
+path/to/Class2 <- path/to/Interface4
+*
+This
+is
+a
+multi-
+lined
+comment
+*
+path/to/Class3 <- path/to/Interface5

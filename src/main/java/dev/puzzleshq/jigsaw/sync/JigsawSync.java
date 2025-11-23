@@ -63,17 +63,20 @@ public class JigsawSync extends AbstractJigsawPlugin {
                             if (fileToHash != null && fileToHash.exists()) {
                                 String hashString = Hashing.sha256().hashBytes(Files.readAllBytes(fileToHash.getAbsoluteFile().toPath())).toString();
 
-                                if (oldObject.get(fileToHash.getName()) == null)
+                                if (oldObject.get(fileToHash.getAbsolutePath()) == null)
                                     fileHashChanged = true;
-                                else if (!oldObject.get(fileToHash.getName()).asString().equals(hashString))
+                                else if (!oldObject.get(fileToHash.getAbsolutePath()).asString().equals(hashString))
                                     fileHashChanged = true;
 
-                                newObject.add(fileToHash.getName(), hashString);
+                                newObject.add(fileToHash.getAbsolutePath(), hashString);
                             }
                         }
                         for (String name : oldObject.names()) {
-                            if (newObject.get(name) == null) {
+                            File file = new File(name);
+                            if (newObject.get(name) == null && file.exists()) {
                                 newObject.add(name, oldObject.get(name).asString());
+                            } else if (!file.exists()) {
+                                fileHashChanged = true;
                             }
                         }
 
