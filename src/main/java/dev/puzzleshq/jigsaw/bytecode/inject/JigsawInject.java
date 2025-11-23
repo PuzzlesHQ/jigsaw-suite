@@ -1,6 +1,5 @@
 package dev.puzzleshq.jigsaw.bytecode.inject;
 
-import com.sun.glass.ui.Clipboard;
 import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.abstracts.IHashablePlugin;
