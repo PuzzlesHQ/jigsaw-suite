@@ -4,6 +4,7 @@ import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.util.FileUtil;
+import dev.puzzleshq.jigsaw.util.TriConsumer;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.*;
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier;
@@ -24,7 +25,7 @@ public class JigsawTransform extends AbstractJigsawPlugin {
 
     public static final Map<String, BiFunction<AtomicReference<String>, ClassVisitor, ClassVisitor>> PLUGIN_TRANSFORMER_MAP = new HashMap<>();
     public static final Map<String, BiConsumer<String, ClassReader>> PLUGIN_CLASS_PREPROCESSOR_MAP = new HashMap<>();
-    public static final Map<String, BiConsumer<String, byte[]>> PLUGIN_RESOURCE_PREPROCESSOR_MAP = new HashMap<>();
+    public static final Map<String, TriConsumer<String, byte[], Map<String, byte[]>>> PLUGIN_RESOURCE_PREPROCESSOR_MAP = new HashMap<>();
 
     public static final Map<String, Configuration> configurationMap = new HashMap<>();
 

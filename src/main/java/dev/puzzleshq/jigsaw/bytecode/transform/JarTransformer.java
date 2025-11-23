@@ -1,6 +1,7 @@
 package dev.puzzleshq.jigsaw.bytecode.transform;
 
 import dev.puzzleshq.jigsaw.util.JavaUtils;
+import dev.puzzleshq.jigsaw.util.TriConsumer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -21,7 +22,7 @@ public class JarTransformer {
     public static void process(
             File in,
             Collection<BiConsumer<String, ClassReader>> classProcessorCollection,
-            Collection<BiConsumer<String, byte[]>> resourceProcessorCollection
+            Collection<TriConsumer<String, byte[], Map<String, byte[]>>> resourceProcessorCollection
     ) {
         try {
             FileInputStream stream = new FileInputStream(in);
@@ -30,6 +31,8 @@ public class JarTransformer {
 
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
             ZipInputStream zipInputStream = new ZipInputStream(byteArrayInputStream);
+
+            Map<String, byte[]> resourceMap = new HashMap<>();
 
             ZipEntry entry;
             while ((entry = zipInputStream.getNextEntry()) != null) {
@@ -42,9 +45,13 @@ public class JarTransformer {
                         value.accept(className, classReader);
                     }
                 } else {
-                    for (BiConsumer<String, byte[]> value : resourceProcessorCollection) {
-                        value.accept(entry.getName(), entryBytes);
-                    }
+                    resourceMap.put(entry.getName(), entryBytes);
+                }
+            }
+
+            for (Map.Entry<String, byte[]> stringEntry : resourceMap.entrySet()) {
+                for (TriConsumer<String, byte[], Map<String, byte[]>> value : resourceProcessorCollection) {
+                    value.accept(stringEntry.getKey(), stringEntry.getValue(), resourceMap);
                 }
             }
 
