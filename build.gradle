@@ -61,11 +61,10 @@ gradlePlugin {
 //            implementationClass = 'dev.puzzleshq.jigsaw.premade.PuzzlePublishing'
 //        }
 //
-//        publishing {
-//            id = 'jigsaw-publishing'
-//            implementationClass = 'dev.puzzleshq.jigsaw.publishing.Publishing'
-//        }
-
+        publishing {
+            id = 'jigsaw-publishing'
+            implementationClass = 'dev.puzzleshq.jigsaw.publishing.Publishing'
+        }
         sync {
             id = 'jigsaw-sync'
             implementationClass = 'dev.puzzleshq.jigsaw.sync.JigsawSync'
