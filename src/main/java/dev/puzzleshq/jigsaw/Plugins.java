@@ -23,14 +23,14 @@ public class Plugins {
 
     private static final AtomicBoolean hasBeenSetup = new AtomicBoolean();
 
-    public static File jigsawDir;
+    public static File localJigsawDir;
     public static File globalJigsawDir;
 
     public static void setup(Project project, PluginContainer pluginContainer) {
         if (hasBeenSetup.get()) return;
         hasBeenSetup.set(true);
 
-        jigsawDir = project.file(".gradle/.jigsaw");
+        localJigsawDir = project.file(".gradle/.jigsaw");
         globalJigsawDir = new File(project.getGradle().getGradleUserHomeDir(), "caches/.jigsaw");
         globalJigsawDir.mkdirs();
 
