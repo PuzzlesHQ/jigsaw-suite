@@ -61,6 +61,10 @@ gradlePlugin {
 //            implementationClass = 'dev.puzzleshq.jigsaw.premade.PuzzlePublishing'
 //        }
 //
+        cleaning {
+            id = 'jigsaw-cleaning'
+            implementationClass = 'dev.puzzleshq.jigsaw.cleaning.Cleaning'
+        }
         publishing {
             id = 'jigsaw-publishing'
             implementationClass = 'dev.puzzleshq.jigsaw.publishing.Publishing'
