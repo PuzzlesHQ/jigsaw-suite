@@ -11,9 +11,7 @@ import org.hjson.Stringify;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,7 @@ public class JigsawSync extends AbstractJigsawPlugin {
     public void apply(Project project) {
 
         project.afterEvaluate((p) -> {
-            hashCache = new File(Plugins.jigsawDir, "hashCache.json");
+            hashCache = new File(Plugins.localJigsawDir, "hashCache.json");
             hashCache.getParentFile().mkdirs();
 
             PLUGIN_LIST.clear();

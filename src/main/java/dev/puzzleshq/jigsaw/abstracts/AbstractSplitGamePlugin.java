@@ -3,6 +3,7 @@ package dev.puzzleshq.jigsaw.abstracts;
 import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.bytecode.transform.JarTransformer;
+import dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform;
 import dev.puzzleshq.jigsaw.gamesupport.game.JigsawGame;
 import dev.puzzleshq.jigsaw.util.ConfigurationUtil;
 import org.gradle.api.Project;
@@ -14,15 +15,19 @@ import org.gradle.api.artifacts.dsl.DependencyHandler;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin {
+public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin implements IHashablePlugin {
 
     public final String configurationName;
     public final String configurationNameInternal;
     public static File globalJigsawMaven;
+    public static File dependencyNameFile;
 
     public AbstractSplitGamePlugin(String configurationName) {
         this.configurationName = configurationName;
@@ -38,6 +43,14 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin {
 
         globalJigsawMaven = new File(Plugins.globalJigsawDir, "maven");
         globalJigsawMaven.mkdirs();
+
+        dependencyNameFile = new File(Plugins.localJigsawDir, "game/" + configurationName + "Version.txt");
+        dependencyNameFile.getParentFile().mkdirs();
+        try {
+            dependencyNameFile.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         target.getRepositories().ivy(r -> {
             r.setName("Global Jigsaw Repo");
@@ -138,6 +151,12 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin {
                 for (Dependency dependency : configuration.getDependencies()) {
                     String dependencyName = dependency.getGroup() + ":" + dependency.getName() + ":" + dependency.getVersion();
 
+                    try {
+                        Files.write(dependencyNameFile.getAbsoluteFile().toPath(), dependencyName.getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
                     dependencyHandler.add(configurationNameInternal, dependencyName + ":" + StringConstants.CLIENT_SIDE);
                     dependencyHandler.add(configurationNameInternal, dependencyName + ":" + StringConstants.SERVER_SIDE);
                 }
@@ -194,4 +213,15 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin {
         return 6;
     }
 
+    @Override
+    public File[] getFilesToHash() {
+        return new File[]{dependencyNameFile};
+    }
+
+    @Override
+    public void triggerChange(Project project) {
+        if (Plugins.jigsawTransform != null) {
+            JigsawTransform.autoTransform(project);
+        }
+    }
 }
