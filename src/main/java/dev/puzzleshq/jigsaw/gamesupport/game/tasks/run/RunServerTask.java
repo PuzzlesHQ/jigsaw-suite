@@ -22,6 +22,7 @@ public class RunServerTask extends JavaExec {
         collection.from(JigsawGame.SERVER_SOURCE_SET.getRuntimeClasspath().getFiles());
         collection.from(JigsawGame.COMMON_SOURCE_SET.getRuntimeClasspath().getFiles());
 
+        setStandardInput(System.in);
         workingDir(JigsawGame.runDir);
     }
 
