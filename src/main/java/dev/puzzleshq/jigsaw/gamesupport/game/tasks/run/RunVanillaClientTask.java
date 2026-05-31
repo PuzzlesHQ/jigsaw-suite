@@ -24,7 +24,6 @@ public class RunVanillaClientTask extends JavaExec {
         );
 
         if (JigsawGame.isCosmicReach) {
-            System.out.println("cosmic reach");
             args(
                     "--save-location", JigsawGame.runDir.getAbsolutePath()
             );
