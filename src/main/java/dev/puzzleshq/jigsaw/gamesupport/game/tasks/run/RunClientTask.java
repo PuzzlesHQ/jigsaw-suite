@@ -11,7 +11,7 @@ public class RunClientTask extends JavaExec {
     public RunClientTask() {
         setGroup("jigsaw/runs");
         args(
-                "--mod-folder", "\"" + new File(JigsawGame.runDir, "pmods").getAbsolutePath() + "\""
+                "--mod-folder", new File(JigsawGame.runDir, "pmods").getAbsolutePath()
         );
         getMainClass().set("dev.puzzleshq.puzzleloader.loader.launch.pieces.ClientPiece");
 

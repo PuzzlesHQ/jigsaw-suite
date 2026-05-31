@@ -28,6 +28,8 @@ public class JigsawGame extends AbstractJigsawPlugin {
 
     public static File runDir;
 
+    public static boolean isCosmicReach = false;
+
     @Override
     public void apply(Project target) {
         super.apply(target);

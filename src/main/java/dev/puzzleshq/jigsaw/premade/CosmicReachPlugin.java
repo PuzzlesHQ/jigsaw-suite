@@ -15,6 +15,8 @@ public class CosmicReachPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project target) {
+        JigsawGame.isCosmicReach = true;
+
         target.getPlugins().apply(JigsawSync.class);
         target.getPlugins().apply(JigsawTransform.class);
         target.getPlugins().apply(JigsawInject.class);

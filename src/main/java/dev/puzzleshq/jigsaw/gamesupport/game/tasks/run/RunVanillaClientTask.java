@@ -20,8 +20,15 @@ public class RunVanillaClientTask extends JavaExec {
         );
 
         args(
-                "--mod-folder", "\"" + new File(JigsawGame.runDir, "pmods").getAbsolutePath() + "\""
+                "--mod-folder", new File(JigsawGame.runDir, "pmods").getAbsolutePath()
         );
+
+        if (JigsawGame.isCosmicReach) {
+            System.out.println("cosmic reach");
+            args(
+                    "--save-location", JigsawGame.runDir.getAbsolutePath()
+            );
+        }
 
         dependsOn("buildMergedJar");
 
