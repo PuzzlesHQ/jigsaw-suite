@@ -11,8 +11,7 @@ import org.hjson.Stringify;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +19,17 @@ public class JigsawSync extends AbstractJigsawPlugin {
 
     static final List<AbstractJigsawPlugin> PLUGIN_LIST = new ArrayList<>();
     static File hashCache;
+    static FileHashDictionary hashDictionary = new FileHashDictionary();
 
     @Override
     public void apply(Project project) {
+        FileSystem fileSystem = FileSystems.getDefault();
+        WatchService watchService = null;
+        try {
+            watchService = fileSystem.newWatchService();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         project.afterEvaluate((p) -> {
             hashCache = new File(Plugins.localJigsawDir, "hashCache.json");
@@ -38,6 +45,25 @@ public class JigsawSync extends AbstractJigsawPlugin {
                 return Integer.compare(bPriority, aPriority);
             });
 
+            boolean fileHashChanged = false;
+            JsonObject oldObject;
+            try {
+                if (!hashCache.exists()) {
+                    hashCache.createNewFile();
+                }
+
+                String oldContent = new String(Files.readAllBytes(hashCache.getAbsoluteFile().toPath()));
+                if (!oldContent.isEmpty()) {
+                    oldObject = JsonValue.readHjson(oldContent).asObject();
+                    hashDictionary.fromObject(oldObject);
+                } else {
+                    fileHashChanged = true;
+                    oldObject = new JsonObject();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
             for (AbstractJigsawPlugin abstractJigsawPlugin : PLUGIN_LIST) {
                 if (abstractJigsawPlugin.equals(this)) continue;
                 System.out.println("Loaded \u001B[0;35m\"" + abstractJigsawPlugin + "\"\u001B[0;0m with Priority: \u001B[0;33m" + abstractJigsawPlugin.getPriority() + "\u001B[0;0m");
@@ -45,49 +71,22 @@ public class JigsawSync extends AbstractJigsawPlugin {
                 if (abstractJigsawPlugin instanceof IHashablePlugin) {
                     IHashablePlugin hashablePlugin = (IHashablePlugin) abstractJigsawPlugin;
 
-                    try {
-                        if (!hashCache.exists()) {
-                            hashCache.createNewFile();
-                        }
+                    fileHashChanged |= hashDictionary.addFiles(hashablePlugin.getFilesToHash());
+                    fileHashChanged |= hashDictionary.pruneDeletedFiles();
+                    fileHashChanged |= hashDictionary.updateHashes();
 
-                        String oldContent = new String(Files.readAllBytes(hashCache.getAbsoluteFile().toPath()));
-                        JsonObject oldObject = new JsonObject();
-                        if (!oldContent.isEmpty()) oldObject = JsonValue.readHjson(oldContent).asObject();
-                        JsonObject newObject = new JsonObject();
-
-                        boolean fileHashChanged = false;
-
-                        for (File fileToHash : hashablePlugin.getFilesToHash()) {
-                            if (fileToHash != null && fileToHash.exists()) {
-                                String hashString = Hashing.sha256().hashBytes(Files.readAllBytes(fileToHash.getAbsoluteFile().toPath())).toString();
-
-                                if (oldObject.get(fileToHash.getAbsolutePath()) == null)
-                                    fileHashChanged = true;
-                                else if (!oldObject.get(fileToHash.getAbsolutePath()).asString().equals(hashString))
-                                    fileHashChanged = true;
-
-                                newObject.add(fileToHash.getAbsolutePath(), hashString);
-                            }
-                        }
-                        for (String name : oldObject.names()) {
-                            File file = new File(name);
-                            if (newObject.get(name) == null && file.exists()) {
-                                newObject.add(name, oldObject.get(name).asString());
-                            } else if (!file.exists()) {
-                                fileHashChanged = true;
-                            }
-                        }
-
-                        Files.write(hashCache.getAbsoluteFile().toPath(), newObject.toString(Stringify.FORMATTED).getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
-                        if (fileHashChanged) {
-                            System.out.println("Reloading plugin: \u001B[0;35m\"" + abstractJigsawPlugin + "\"\u001B[0;0m");
-                            hashablePlugin.triggerChange(project);
-                        }
-
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    if (fileHashChanged) {
+                        System.out.println("Detected Hash Change, Reloading plugin: \u001B[0;35m\"" + abstractJigsawPlugin + "\"\u001B[0;0m");
+                        hashablePlugin.triggerChange(project);
                     }
                 }
+            }
+
+            hashDictionary.toObject(oldObject);
+            try {
+                Files.write(hashCache.getAbsoluteFile().toPath(), oldObject.toString(Stringify.FORMATTED).getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         });
     }

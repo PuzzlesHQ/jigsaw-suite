@@ -2,6 +2,10 @@ package dev.puzzleshq.jigsaw.bytecode.transform;
 
 import dev.puzzleshq.jigsaw.util.JavaUtils;
 import dev.puzzleshq.jigsaw.util.TriConsumer;
+import org.jetbrains.java.decompiler.api.Decompiler;
+import org.jetbrains.java.decompiler.main.decompiler.SingleFileSaver;
+import org.jetbrains.java.decompiler.main.extern.IFernflowerLogger;
+import org.jetbrains.java.decompiler.main.extern.IFernflowerPreferences;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -111,7 +115,8 @@ public class JarTransformer {
 
     public static void split(
             File clientIn, File serverIn,
-            File clientOut, File commonOut, File serverOut
+            File clientOut, File commonOut, File serverOut,
+            boolean createSources
     ) throws IOException {
         Map<String, ZipEntry> commonFiles = new HashMap<>();
         Map<String, ZipEntry> serverFiles = new HashMap<>();
@@ -203,12 +208,19 @@ public class JarTransformer {
 
         clientJarFile.close();
         serverJarFile.close();
+
+        if (createSources) {
+            createSourceJar(clientOut);
+            createSourceJar(commonOut);
+            createSourceJar(serverOut);
+        }
     }
 
     public static void merge(
             File clientIn,
             File serverIn,
-            File mergedOut
+            File mergedOut,
+            boolean createSource
     ) throws IOException {
         Map<String, ZipEntry> serverFiles = new HashMap<>();
         Map<String, ZipEntry> clientFiles = new HashMap<>();
@@ -260,6 +272,39 @@ public class JarTransformer {
 
         clientJarFile.close();
         serverJarFile.close();
+
+        if (createSource)
+            createSourceJar(mergedOut);
+    }
+
+    public static void createSourceJar(
+            File inFile
+    ) {
+        String newFileName = inFile.getName();
+        int extensionIndex = newFileName.lastIndexOf('.');
+        newFileName = newFileName.substring(0, extensionIndex) + "-sources" + newFileName.substring(extensionIndex);
+
+        File outFile = new File(inFile.getParent(), newFileName);
+
+        Decompiler decompiler = new Decompiler.Builder()
+                .inputs(inFile).output(new SingleFileSaver(outFile))
+                .option(IFernflowerPreferences.INCLUDE_ENTIRE_CLASSPATH, true)
+                .option(IFernflowerPreferences.IGNORE_INVALID_BYTECODE, true)
+                .option(IFernflowerPreferences.DECOMPILER_COMMENTS, false)
+                .logger(new IFernflowerLogger() {
+                    @Override
+                    public void writeMessage(String s, Severity severity) {
+
+                    }
+
+                    @Override
+                    public void writeMessage(String s, Severity severity, Throwable throwable) {
+
+                    }
+                })
+                .build();
+
+        decompiler.decompile();
     }
 
 }

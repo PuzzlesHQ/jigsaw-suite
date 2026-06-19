@@ -165,9 +165,9 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin imple
 
         try {
             if (!mergedOut.get().exists())
-                JarTransformer.merge(clientIn.get(), serverIn.get(), mergedOut.get());
+                JarTransformer.merge(clientIn.get(), serverIn.get(), mergedOut.get(), false);
             if (!clientOut.get().exists() || !commonOut.get().exists() || !serverOut.get().exists())
-                JarTransformer.split(clientIn.get(), serverIn.get(), clientOut.get(), commonOut.get(), serverOut.get());
+                JarTransformer.split(clientIn.get(), serverIn.get(), clientOut.get(), commonOut.get(), serverOut.get(), true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -221,7 +221,7 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin imple
     @Override
     public void triggerChange(Project project) {
         if (Plugins.jigsawTransform != null) {
-            JigsawTransform.autoTransform(project);
+//            JigsawTransform.autoTransform(project);
         }
     }
 }

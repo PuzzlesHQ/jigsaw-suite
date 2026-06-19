@@ -13,6 +13,12 @@ public class RunClientTask extends JavaExec {
         args(
                 "--mod-folder", new File(JigsawGame.runDir, "pmods").getAbsolutePath()
         );
+        if (JigsawGame.isCosmicReach) {
+            args(
+                    "--save-location", JigsawGame.runDir.getAbsolutePath()
+            );
+        }
+
         getMainClass().set("dev.puzzleshq.puzzleloader.loader.launch.pieces.ClientPiece");
 
         dependsOn("buildMergedJar");

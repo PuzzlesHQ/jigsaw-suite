@@ -1,5 +1,6 @@
 package dev.puzzleshq.jigsaw.bytecode.transform;
 
+import dev.puzzleshq.jigsaw.bytecode.transform.tasks.CreateTransformSourcesTask;
 import dev.puzzleshq.jigsaw.bytecode.transform.tasks.DeleteTransformsTask;
 import dev.puzzleshq.jigsaw.bytecode.transform.tasks.TransformTask;
 import org.gradle.api.Project;
@@ -11,6 +12,7 @@ public class TransformTasks {
         TaskContainer container = project.getTasks();
         container.register("transformJars", TransformTask.class);
         container.register("deleteTransforms", DeleteTransformsTask.class);
+        container.register("createTransformSources", CreateTransformSourcesTask.class);
     }
 
 }

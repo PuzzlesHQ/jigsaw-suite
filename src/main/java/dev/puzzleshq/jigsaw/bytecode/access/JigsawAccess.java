@@ -108,6 +108,6 @@ public class JigsawAccess extends AbstractJigsawPlugin implements IHashablePlugi
 
     @Override
     public void triggerChange(Project project) {
-        JigsawTransform.autoTransform(project);
+//        JigsawTransform.autoTransform(project);
     }
 }

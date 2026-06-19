@@ -3,6 +3,7 @@ package dev.puzzleshq.jigsaw.bytecode.transform;
 import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
+import dev.puzzleshq.jigsaw.abstracts.IHashablePlugin;
 import dev.puzzleshq.jigsaw.util.FileUtil;
 import dev.puzzleshq.jigsaw.util.TriConsumer;
 import org.gradle.api.Project;
@@ -16,12 +17,13 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
-public class JigsawTransform extends AbstractJigsawPlugin {
+public class JigsawTransform extends AbstractJigsawPlugin implements IHashablePlugin {
 
     public static final Map<String, BiFunction<AtomicReference<String>, ClassVisitor, ClassVisitor>> PLUGIN_TRANSFORMER_MAP = new HashMap<>();
     public static final Map<String, BiConsumer<String, ClassReader>> PLUGIN_CLASS_PREPROCESSOR_MAP = new HashMap<>();
@@ -91,6 +93,7 @@ public class JigsawTransform extends AbstractJigsawPlugin {
                         JigsawTransform.PLUGIN_RESOURCE_PREPROCESSOR_MAP.values()
                 );
                 JarTransformer.transform(artifact.getRegularFile(), transformedFile, JigsawTransform.PLUGIN_TRANSFORMER_MAP.values());
+                JarTransformer.createSourceJar(transformedFile);
             }
         }
     }
@@ -148,7 +151,7 @@ public class JigsawTransform extends AbstractJigsawPlugin {
 
             r.metadataSources(s -> {
                 s.artifact();
-                s.ignoreGradleMetadataRedirection();
+//                s.ignoreGradleMetadataRedirection();
             });
         });
     }
@@ -218,5 +221,15 @@ public class JigsawTransform extends AbstractJigsawPlugin {
     @Override
     public int getPriority() {
         return Integer.MIN_VALUE + 1;
+    }
+
+    @Override
+    public File[] getFilesToHash() {
+        return new File[0];
+    }
+
+    @Override
+    public void triggerChange(Project project) {
+        JigsawTransform.autoTransform(project);
     }
 }
