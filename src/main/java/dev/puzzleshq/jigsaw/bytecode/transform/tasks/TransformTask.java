@@ -80,7 +80,6 @@ public class TransformTask extends DefaultTask {
                         JigsawTransform.PLUGIN_RESOURCE_PREPROCESSOR_MAP.values()
                 );
                 JarTransformer.transform(artifact.getRegularFile(), transformedFile, JigsawTransform.PLUGIN_TRANSFORMER_MAP.values());
-                JarTransformer.createSourceJar(transformedFile);
             }
         }
     }

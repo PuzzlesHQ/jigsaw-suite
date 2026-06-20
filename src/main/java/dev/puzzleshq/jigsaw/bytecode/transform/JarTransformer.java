@@ -3,6 +3,7 @@ package dev.puzzleshq.jigsaw.bytecode.transform;
 import dev.puzzleshq.jigsaw.util.JavaUtils;
 import dev.puzzleshq.jigsaw.util.TriConsumer;
 import org.jetbrains.java.decompiler.api.Decompiler;
+import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
 import org.jetbrains.java.decompiler.main.decompiler.SingleFileSaver;
 import org.jetbrains.java.decompiler.main.extern.IFernflowerLogger;
 import org.jetbrains.java.decompiler.main.extern.IFernflowerPreferences;
@@ -291,17 +292,7 @@ public class JarTransformer {
                 .option(IFernflowerPreferences.INCLUDE_ENTIRE_CLASSPATH, true)
                 .option(IFernflowerPreferences.IGNORE_INVALID_BYTECODE, true)
                 .option(IFernflowerPreferences.DECOMPILER_COMMENTS, false)
-                .logger(new IFernflowerLogger() {
-                    @Override
-                    public void writeMessage(String s, Severity severity) {
-
-                    }
-
-                    @Override
-                    public void writeMessage(String s, Severity severity, Throwable throwable) {
-
-                    }
-                })
+                .logger(new PrintStreamLogger(System.out))
                 .build();
 
         decompiler.decompile();
