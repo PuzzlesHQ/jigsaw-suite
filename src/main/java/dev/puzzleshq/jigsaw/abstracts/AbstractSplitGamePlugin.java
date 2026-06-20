@@ -167,7 +167,7 @@ public abstract class AbstractSplitGamePlugin extends AbstractJigsawPlugin imple
             if (!mergedOut.get().exists())
                 JarTransformer.merge(clientIn.get(), serverIn.get(), mergedOut.get(), false);
             if (!clientOut.get().exists() || !commonOut.get().exists() || !serverOut.get().exists())
-                JarTransformer.split(clientIn.get(), serverIn.get(), clientOut.get(), commonOut.get(), serverOut.get(), true);
+                JarTransformer.split(clientIn.get(), serverIn.get(), clientOut.get(), commonOut.get(), serverOut.get(), false);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
