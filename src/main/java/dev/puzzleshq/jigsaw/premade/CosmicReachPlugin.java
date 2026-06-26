@@ -1,6 +1,7 @@
 package dev.puzzleshq.jigsaw.premade;
 
 import dev.puzzleshq.jigsaw.bytecode.access.JigsawAccess;
+import dev.puzzleshq.jigsaw.bytecode.extension.JigsawExtension;
 import dev.puzzleshq.jigsaw.bytecode.inject.JigsawInject;
 import dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform;
 import dev.puzzleshq.jigsaw.cleaning.Cleaning;
@@ -20,6 +21,7 @@ public class CosmicReachPlugin implements Plugin<Project> {
         target.getPlugins().apply(JigsawSync.class);
         target.getPlugins().apply(JigsawTransform.class);
         target.getPlugins().apply(JigsawInject.class);
+        target.getPlugins().apply(JigsawExtension.class);
         target.getPlugins().apply(JigsawAccess.class);
         target.getPlugins().apply(JigsawGame.class);
         target.getPlugins().apply(LoaderPlugin.class);

@@ -82,6 +82,10 @@ gradlePlugin {
             id = 'jigsaw-inject'
             implementationClass = 'dev.puzzleshq.jigsaw.bytecode.inject.JigsawInject'
         }
+        enum_extension {
+            id = 'jigsaw-Extension'
+            implementationClass = 'dev.puzzleshq.jigsaw.bytecode.extension.JigsawExtension'
+        }
         game {
             id = 'jigsaw-game'
             implementationClass = 'dev.puzzleshq.jigsaw.gamesupport.game.JigsawGame'
