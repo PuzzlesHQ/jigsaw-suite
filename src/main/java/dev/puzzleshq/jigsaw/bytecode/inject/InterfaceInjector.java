@@ -31,23 +31,7 @@ public class InterfaceInjector extends ClassVisitor {
             addEntry(entry);
     }
 
-    public static void searchForLoomInjectorEntries(JsonObject object) {
-        JsonValue customValue = object.get("custom");
-        if (customValue == null) return;
-        JsonValue loomInjectedInterfacesValue = customValue.asObject().get("loom:injected_interfaces");
-        if (loomInjectedInterfacesValue == null) return;
-
-        JsonObject loomInjectedInterfacesObject = loomInjectedInterfacesValue.asObject();
-        for (JsonObject.Member member : loomInjectedInterfacesObject) {
-            Set<String> list = interfaceMap.getOrDefault(member.getName(), new HashSet<>());
-            JsonArray array = member.getValue().asArray();
-            for (JsonValue value : array) list.add(value.asString());
-            interfaceMap.put(member.getName(), list);
-        }
-    }
-
     public static void search(JsonObject object, Map<String, byte[]> resourceMap) {
-        searchForLoomInjectorEntries(object);
         List<String> entries = searchForInjectorEntries(object);
 
         for (String entry : entries) {

@@ -11,17 +11,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class InjectionExtension extends AbstractJigsawExtension {
 
-    public File modJson;
     public final AtomicReference<FileCollection> injectionFiles;
 
     public InjectionExtension(Project project, ObjectFactory objectFactory) {
         super(project, objectFactory);
         injectionFiles = new AtomicReference<>(objectFactory.fileCollection());
-    }
-
-    public void setModJson(File file) {
-        modJson = file;
-        JigsawInject.files.add(file);
     }
 
     public void addInterfaceInjectors(ConfigurableFileCollection collection) {

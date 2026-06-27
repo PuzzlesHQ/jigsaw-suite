@@ -66,18 +66,6 @@ public class JigsawInject extends AbstractJigsawPlugin implements IHashablePlugi
         super.afterEvaluate(project);
         InterfaceInjector.interfaceMap.clear();
 
-        if (injectionExtension.modJson != null) {
-            try {
-                FileInputStream stream = new FileInputStream(injectionExtension.modJson);
-                String str = new String(JavaUtils.readAllBytes(stream));
-                JsonObject object = JsonValue.readHjson(str).asObject();
-                InterfaceInjector.searchForLoomInjectorEntries(object);
-                stream.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
         for (Map.Entry<JsonObject, Map<String, byte[]>> entry : Plugins.modJsonsAndResources.entrySet()) {
             InterfaceInjector.search(entry.getKey(), entry.getValue());
         }
