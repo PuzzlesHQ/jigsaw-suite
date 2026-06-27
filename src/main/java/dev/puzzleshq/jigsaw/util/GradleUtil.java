@@ -1,6 +1,5 @@
 package dev.puzzleshq.jigsaw.util;
 
-import groovy.lang.Closure;
 import org.gradle.api.Project;
 import org.gradle.api.initialization.Settings;
 import org.gradle.api.invocation.Gradle;

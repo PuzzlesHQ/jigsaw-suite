@@ -4,7 +4,6 @@ import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.abstracts.IHashablePlugin;
 import org.gradle.api.Project;
-import org.gradle.internal.hash.Hashing;
 import org.hjson.JsonObject;
 import org.hjson.JsonValue;
 import org.hjson.Stringify;

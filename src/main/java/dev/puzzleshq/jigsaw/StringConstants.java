@@ -1,7 +1,5 @@
 package dev.puzzleshq.jigsaw;
 
-import org.gradle.api.Plugin;
-
 public class StringConstants {
 
     public static final String PUZZLE_MOD_JSON = "puzzle.mod.json";

@@ -5,7 +5,6 @@ import dev.puzzleshq.jigsaw.util.TriConsumer;
 import org.jetbrains.java.decompiler.api.Decompiler;
 import org.jetbrains.java.decompiler.main.decompiler.PrintStreamLogger;
 import org.jetbrains.java.decompiler.main.decompiler.SingleFileSaver;
-import org.jetbrains.java.decompiler.main.extern.IFernflowerLogger;
 import org.jetbrains.java.decompiler.main.extern.IFernflowerPreferences;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;

@@ -5,6 +5,7 @@ import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.util.ConfigurationUtil;
 import dev.puzzleshq.jigsaw.util.JavaUtils;
+import dev.puzzleshq.jigsaw.util.PuzzleModJsonsUtil;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
@@ -108,6 +109,8 @@ public class LoaderPlugin extends AbstractJigsawPlugin {
                 }
             }
         });
+
+        Plugins.modJsonsAndResources = PuzzleModJsonsUtil.findModJsons(project);
     }
 
     private void processDependenciesObject(Project project, Configuration clientConfig, Configuration commonConfig, Configuration serverConfig, JsonObject dependenciesObject) {

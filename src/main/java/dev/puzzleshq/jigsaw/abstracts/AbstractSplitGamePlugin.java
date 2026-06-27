@@ -3,7 +3,6 @@ package dev.puzzleshq.jigsaw.abstracts;
 import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.bytecode.transform.JarTransformer;
-import dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform;
 import dev.puzzleshq.jigsaw.gamesupport.game.JigsawGame;
 import dev.puzzleshq.jigsaw.util.ConfigurationUtil;
 import org.gradle.api.Project;

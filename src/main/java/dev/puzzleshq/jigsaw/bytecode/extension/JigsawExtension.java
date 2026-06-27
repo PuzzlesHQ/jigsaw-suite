@@ -1,5 +1,6 @@
 package dev.puzzleshq.jigsaw.bytecode.extension;
 
+import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.abstracts.IHashablePlugin;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class JigsawExtension extends AbstractJigsawPlugin implements IHashablePlugin {
@@ -61,6 +63,10 @@ public class JigsawExtension extends AbstractJigsawPlugin implements IHashablePl
     public void afterEvaluate(Project project) {
         super.afterEvaluate(project);
         EnumExtender.enumMap.clear();
+
+        for (Map.Entry<JsonObject, Map<String, byte[]>> entry : Plugins.modJsonsAndResources.entrySet()) {
+            EnumExtender.search(entry.getKey(), entry.getValue());
+        }
 
         for (File file : this.extenderJigsawExtension.extensionFiles.get()) {
             if (file == null) continue;

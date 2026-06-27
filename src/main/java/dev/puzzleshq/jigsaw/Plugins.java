@@ -3,9 +3,9 @@ package dev.puzzleshq.jigsaw;
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.bytecode.access.JigsawAccess;
 import dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform;
-import dev.puzzleshq.jigsaw.sync.FileHashDictionary;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.PluginContainer;
+import org.hjson.JsonObject;
 
 import java.io.File;
 import java.util.HashMap;
@@ -26,6 +26,8 @@ public class Plugins {
 
     public static File localJigsawDir;
     public static File globalJigsawDir;
+
+    public static Map<JsonObject, Map<String, byte[]>> modJsonsAndResources = new HashMap<>();
 
     public static void setup(Project project, PluginContainer pluginContainer) {
         if (hasBeenSetup.get()) return;

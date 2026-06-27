@@ -1,5 +1,6 @@
 package dev.puzzleshq.jigsaw.bytecode.inject;
 
+import dev.puzzleshq.jigsaw.Plugins;
 import dev.puzzleshq.jigsaw.StringConstants;
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawPlugin;
 import dev.puzzleshq.jigsaw.abstracts.IHashablePlugin;
@@ -14,7 +15,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class JigsawInject extends AbstractJigsawPlugin implements IHashablePlugin {
 
@@ -72,6 +76,10 @@ public class JigsawInject extends AbstractJigsawPlugin implements IHashablePlugi
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        for (Map.Entry<JsonObject, Map<String, byte[]>> entry : Plugins.modJsonsAndResources.entrySet()) {
+            InterfaceInjector.search(entry.getKey(), entry.getValue());
         }
 
         for (File file : this.injectionExtension.injectionFiles.get()) {

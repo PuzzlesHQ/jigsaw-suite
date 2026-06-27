@@ -1,7 +1,6 @@
 package dev.puzzleshq.jigsaw.bytecode.access;
 
 import dev.puzzleshq.jigsaw.abstracts.AbstractJigsawExtension;
-import dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform;
 import org.gradle.api.Project;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.FileCollection;

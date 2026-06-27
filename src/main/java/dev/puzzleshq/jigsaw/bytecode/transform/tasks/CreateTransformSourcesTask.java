@@ -2,8 +2,6 @@ package dev.puzzleshq.jigsaw.bytecode.transform.tasks;
 
 import dev.puzzleshq.jigsaw.bytecode.transform.JarTransformer;
 import dev.puzzleshq.jigsaw.bytecode.transform.JigsawTransform;
-import dev.puzzleshq.jigsaw.gamesupport.game.JigsawGame;
-import dev.puzzleshq.jigsaw.util.FileUtil;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 

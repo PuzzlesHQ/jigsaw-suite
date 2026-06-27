@@ -7,7 +7,6 @@ import org.gradle.api.file.FileCollection;
 import org.gradle.api.model.ObjectFactory;
 
 import java.io.File;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class InjectionExtension extends AbstractJigsawExtension {

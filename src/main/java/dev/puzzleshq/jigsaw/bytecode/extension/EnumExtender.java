@@ -32,6 +32,7 @@ public class EnumExtender {
             if (bytes == null) continue;
 
             addExtenderFile(new String(bytes));
+            System.out.println("\u001B[1;94m\t ↳ \u001B[1;0mAdded file \u001B[0;36m\"" + entry + "\"\u001B[0;0m from mod \u001B[0;32m" + object.get("id") + "\u001B[0;0m");
         }
     }
 
